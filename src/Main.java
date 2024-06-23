@@ -23,25 +23,25 @@ public class Main {
                             System.out.println("Введите обычную задачу:");
                             menuInStr = sc.nextLine();
 
-                            TaskManager.addTask(menuInStr, TaskType.REGULAR);
+                            master.addTask(menuInStr, TaskType.REGULAR);
                             break;
                         case 2:
                             System.out.println("Введите ЭПИЧЕСКУЮ задачу:");
                             menuInStr = sc.nextLine();
 
-                            TaskManager.addTask(menuInStr, TaskType.EPIC);
+                            master.addTask(menuInStr, TaskType.EPIC);
                             break;
                         case 3:
-                            TaskManager.printEpic();
+                            master.printEpic();
                             System.out.println("Введите ID ЭПИЧЕСКОЙ задачи:");
                             menuInInt = sc.nextInt();
                             sc.nextLine();
-                            if (TaskManager.keyList.containsKey(menuInInt)) {
-                                Task support = TaskManager.dataBase.get(TaskManager.keyList.get(menuInInt));
+                            if (master.keyList.containsKey(menuInInt)) {
+                                Task support = master.dataBase.get(master.keyList.get(menuInInt));
                                 if (support.getType() == TaskType.EPIC) {
                                     System.out.println("Введите подзадачу:");
                                     menuInStr = sc.nextLine();
-                                    support.addSubTask(menuInStr, TaskType.SUBTASK);
+                                    support.addSubTask(menuInStr, TaskType.SUBTASK, master);
                                 } else {
                                     System.out.println("Это не эпик-задача. Создайте эпическую задачу.");
                                 }
@@ -55,31 +55,31 @@ public class Main {
 
                     break;
                 case 2:
-                    TaskManager.printAll();
+                    master.printAll();
                     break;
                 case 3:
                     System.out.println("Введите ID задачи:");
                     menuInInt = sc.nextInt();
                     sc.nextLine();
-                    TaskManager.inProgress(menuInInt);
+                    master.inProgress(menuInInt);
                     break;
                 case 4:
                     System.out.println("Введите ID задачи:");
                     menuInInt = sc.nextInt();
                     sc.nextLine();
-                    TaskManager.complete(menuInInt);
+                    master.complete(menuInInt);
                     break;
                 case 5:
                     System.out.println("Введите ID задачи для удаления:");
                     menuInInt = sc.nextInt();
                     sc.nextLine();
-                    TaskManager.deletePos(menuInInt);
+                    master.deletePos(menuInInt);
                     break;
                 case 555:
-                    TaskManager.printDebug();
+                    master.printDebug();
                     break;
                 case 6:
-                    TaskManager.eraseAll();
+                    master.eraseAll();
                     break;
                 case 0:
                     break;

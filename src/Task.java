@@ -68,13 +68,14 @@ public class Task {
     }
 
 
-    void addSubTask(String content, TaskType type) {
-
+    void addSubTask(String content, TaskType type, TaskManager obj) {
+        TaskManager master = new TaskManager();
+        master = obj;
         Task task = new Task(content, type);
         boolean checkTask = false;
-        boolean hasKey = TaskManager.dataBase.containsKey(task.hashCode());//проверяем есть ли такая задача
+        boolean hasKey = master.dataBase.containsKey(task.hashCode());//проверяем есть ли такая задача
         if (hasKey) {
-            checkTask = task.equals(TaskManager.dataBase.get(task.hashCode()));//тута сравниваем
+            checkTask = task.equals(master.dataBase.get(task.hashCode()));//тута сравниваем
         }
         if (checkTask) {
             System.out.println("Такая подзадача уже существует..");
@@ -83,10 +84,10 @@ public class Task {
         if (this.status == Status.DONE) { //откат эпика если добавлена новая задача
             this.status = Status.IN_PROGRESS;
         }
-        TaskManager.taskID++;
-        TaskManager.dataBase.put(task.hashCode(), task);
-        TaskManager.keyList.put(TaskManager.taskID, task.hashCode());
-        subList.add(TaskManager.taskID);
+        master.taskID++;
+        master.dataBase.put(task.hashCode(), task);
+        master.keyList.put(master.taskID, task.hashCode());
+        subList.add(master.taskID);
     }
 
     public ArrayList<Integer> getSubList() {
