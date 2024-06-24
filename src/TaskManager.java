@@ -1,5 +1,5 @@
 import java.util.HashMap;
-
+//rev2
 public class TaskManager {
 
     //Хранение всех типов
