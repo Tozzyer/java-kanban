@@ -1,107 +1,73 @@
-import java.util.ArrayList;
 import java.util.Objects;
 
 public class Task {
 
-    private Status status;          // статус задачи
-    private final TaskType type; // тип задачи
+    private Integer id;//id задачи
+    private String taskName; // имя задачи
+    private Status status;  // статус задачи
     private String content; // содержимое задачи
-    private ArrayList<Integer> subList;
 
     //Конструктор
 
-    Task(String content, TaskType type) {
-        status = Status.NEW;
+    Task(String taskName, String content, Status status) {
+        this.status = status;
+        this.taskName = taskName;
         this.content = content;
-        this.type = type;
 
-        if (type == TaskType.EPIC) {
-            this.subList = new ArrayList<>();
-            System.out.println("Создана ЭПИЧЕСКАЯ задача:" + "\"" + content + "\".");
-        } else if (type == TaskType.SUBTASK) {
-            System.out.println("Создана подзадача:" + "\"" + content + "\".");
-        } else {
-            System.out.println("Создана задача:" + "\"" + content + "\".");
-        }
     }
 
-    //Геттеры-сеттеры
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
 
     public Status getStatus() {
         return status;
-    }
-
-    public TaskType getType() {
-        return type;
-    }
-
-    public String getContent() {
-        return content;
     }
 
     public void setStatus(Status status) {
         this.status = status;
     }
 
-
-    @Override
-    public int hashCode() {
-        int hash = 11;
-        hash += content.hashCode();
-        hash *= 3;
-        hash += (type.hashCode());
-        if (!(subList == null) && subList.isEmpty()) {//Проверка эквивалентности для одинаковых саб-задач в разных эпиках
-            hash += subList.hashCode();
-        }
-        return hash;
+    public String getContent() {
+        return content;
     }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
-
-        return type == task.type && Objects.equals(content, task.content) && Objects.equals(subList, task.subList);
-
+        return Objects.equals(id, task.id) && Objects.equals(taskName, task.taskName) && status == task.status && Objects.equals(content, task.content);
     }
 
-
-    void addSubTask(String content, TaskType type, TaskManager obj) {
-        TaskManager master = new TaskManager();
-        master = obj;
-        Task task = new Task(content, type);
-        boolean checkTask = false;
-        boolean hasKey = master.dataBase.containsKey(task.hashCode());//проверяем есть ли такая задача
-        if (hasKey) {
-            checkTask = task.equals(master.dataBase.get(task.hashCode()));//тута сравниваем
-        }
-        if (checkTask) {
-            System.out.println("Такая подзадача уже существует..");
-            return;
-        }
-        if (this.status == Status.DONE) { //откат эпика если добавлена новая задача
-            this.status = Status.IN_PROGRESS;
-        }
-        master.taskID++;
-        master.dataBase.put(task.hashCode(), task);
-        master.keyList.put(master.taskID, task.hashCode());
-        subList.add(master.taskID);
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, taskName, status, content);
     }
-
-    public ArrayList<Integer> getSubList() {
-        return subList;
-    }
-
 
     @Override
     public String toString() {
         return "Task{" +
-                "status=" + status +
-                ", type=" + type +
+                "id=" + id +
+                ", taskName='" + taskName + '\'' +
+                ", status=" + status +
                 ", content='" + content + '\'' +
-                ", subList=" + subList +
                 '}';
     }
 }

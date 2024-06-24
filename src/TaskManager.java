@@ -1,113 +1,141 @@
 import java.util.HashMap;
-import java.util.ArrayList;
 
 public class TaskManager {
 
-    Integer taskID = 0;
-    HashMap<Integer, Task> dataBase = new HashMap<>();
-    HashMap<Integer, Integer> keyList = new HashMap<>();
+    //Хранение всех типов
+    Integer taskId = 0;
+    HashMap<Integer, Task> taskList = new HashMap<>();
+    HashMap<Integer, Epic> epicList = new HashMap<>();
+    HashMap<Integer, SubTask> subList = new HashMap<>();
 
-    void addTask(String content, TaskType type) {
-        Task task = new Task(content, type); //запускаем конструктор таск
-
-        boolean checkTask = false;
-        boolean hasKey = dataBase.containsKey(task.hashCode());//проверяем есть ли такая задача
-        if (hasKey) {
-            checkTask = task.equals(dataBase.get(task.hashCode()));//тута сравниваем
-        }
-        if (checkTask) {
-            System.out.println("Такая задача уже существует..");
-            return;
-        }
-        taskID++;
-
-        dataBase.put(task.hashCode(), task);
-        keyList.put(taskID, task.hashCode());
-    }
-
-    void printDebug() {
-        for (Integer key : keyList.keySet()) {
-            System.out.println("ID: " + key + ". Hash: " + keyList.get(key) + ". Obj: " + dataBase.get(keyList.get(key)));
+    //Тип задач Regular
+    //Получение всех задач
+    void getAllTaskList() {
+        for (Integer key : taskList.keySet()) {
+            System.out.println("ID: " + key + ". Object: " + taskList.get(key));
         }
     }
 
-    void printAll() {
-        for (Integer key : keyList.keySet()) {
-            System.out.println("ID: " + key + ". Тип: " + dataBase.get(keyList.get(key)).getType() + ". Задача: " + dataBase.get(keyList.get(key)).getContent() + ". Статус задачи: " + dataBase.get(keyList.get(key)).getStatus());
+    //Получение по идентификатору
+    Task getTaskList(Integer id) {
+        System.out.println("Object: " + taskList.get(id));
+        return taskList.get(id);
+    }
+
+    //Удаление всех задач
+    void eraseTaskList() {
+        taskList.clear();
+    }
+
+    //Создание задачи
+    void addTask(Task task) {
+        taskId++;
+        taskList.put(taskId, task);
+        task.setId(taskId);
+    }
+
+    //Обновление задачи
+    void updateTask(Task task, Integer id) {
+        taskList.put(taskId, task);
+        task.setId(taskId);
+    }
+
+    //Удаление по идентификатору
+    void removeTask(Integer id) {
+        taskList.remove(id);
+    }
+
+    //Тип задач Epic
+    //Получение всех задач
+    void getAllEpicList() {
+        for (Integer key : epicList.keySet()) {
+            System.out.println("ID: " + key + ". Object: " + epicList.get(key));
         }
     }
 
-    void printRegular() {
-        System.out.println("Список обычных задач:");
-        for (Integer key : keyList.keySet()) {
-            if (dataBase.get(keyList.get(key)).getType() == TaskType.REGULAR) {
-                System.out.println("ID: " + key + ". Задача: " + dataBase.get(keyList.get(key)).getContent() + ". Статус задачи: " + dataBase.get(keyList.get(key)).getStatus());
+    //Получение по идентификатору
+    Epic getEpicList(Integer id) {
+        System.out.println("Object: " + epicList.get(id));
+        return epicList.get(id);
+    }
+
+    //Удаление всех задач
+    void eraseEpicList() {
+        epicList.clear();
+    }
+
+    //Создание задачи
+    void addEpic(Epic task) {
+        taskId++;
+        epicList.put(taskId, task);
+        task.setId(taskId);
+    }
+
+    //Обновление задачи
+    void updateEpic(Epic task, Integer id) {
+        epicList.put(taskId, task);
+        task.setId(taskId);
+    }
+
+    //Удаление по идентификатору
+    void removeEpic(Integer id) {
+        epicList.remove(id);
+    }
+
+    //Получение списка всех подзадач определённого эпика
+    void getEpicSubList(Integer epicId) {
+        getEpicList(epicId).printAllSubList();
+    }
+    //Тип задач SubTask:
+
+    //Получение всех задач
+    void getAllSubList() {
+        for (Integer key : subList.keySet()) {
+            System.out.println("ID: " + key + ". Object: " + subList.get(key));
+        }
+    }
+
+    //Получение по идентификатору
+    Task getSubList(Integer id) {
+        System.out.println("Object: " + subList.get(id));
+        return subList.get(id);
+    }
+
+    //Удаление всех подзадач
+    void eraseSubList() {
+        subList.clear();
+        for (Epic epic : epicList.values()) {
+            epic.clearSub();
+            epic.statusUpdate();
+        }
+    }
+
+    //Создание задачи, добавление к существующей Epic
+    void addSub(SubTask task, Integer epicId) {
+        taskId++;
+        subList.put(taskId, task);
+        task.setId(taskId);
+        getEpicList(epicId).addSubTask(task);
+        getEpicList(epicId).statusUpdate();
+    }
+
+    //Обновление задачи
+    void updateSubTask(SubTask task, Integer id, Integer epicId) {
+        subList.put(taskId, task);
+        task.setId(taskId);
+        epicList.get(epicId).addSubTask(task);
+        getEpicList(epicId).statusUpdate();
+    }
+
+    //Удаление по идентификатору
+    void removeSubTask(Integer id) {
+        taskList.remove(id);
+        for (Epic epic : epicList.values()) {
+            if (epic.epicSubList.containsKey(id)) {
+                epic.epicSubList.remove(id);
+                epic.statusUpdate();
             }
         }
     }
 
-    void printEpic() {
-        System.out.println("Список ЭПИЧЕСКИХ задач:");
-        for (Integer key : keyList.keySet()) {
-            if (dataBase.get(keyList.get(key)).getType() == TaskType.EPIC) {
-                System.out.println("ID: " + key + ". Задача: " + dataBase.get(keyList.get(key)).getContent() + ". Статус задачи: " + dataBase.get(keyList.get(key)).getStatus());
-            }
-        }
-    }
-
-    void complete(int id) {
-        Task support = dataBase.get(keyList.get(id));
-        if (support.getType() == TaskType.SUBTASK) {//поиск эпика для сабтаска
-            for (Integer key : keyList.keySet()) {
-                if (dataBase.get(keyList.get(key)).getType() == TaskType.EPIC) {
-                    var subList = dataBase.get(keyList.get(key)).getSubList();
-                    if (subList.contains(id)) {
-                        dataBase.get(keyList.get(id)).setStatus(Status.DONE);//установка эпика в DONE при изменении саба.
-                        boolean allDone = true;
-                        for (int i = 0; i < subList.size(); i++) {
-                            Integer value = subList.get(i);
-                            if (!(dataBase.get(keyList.get(id)).getStatus() == Status.DONE)) {
-                                allDone = false;
-                            }
-                            if (allDone) {
-                                dataBase.get(keyList.get(key)).setStatus(Status.DONE);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        dataBase.get(keyList.get(id)).setStatus(Status.DONE);
-        System.out.println("Задача выполнена..");
-    }
-
-    void inProgress(int id) {
-        Task support = dataBase.get(keyList.get(id));
-        if (support.getType() == TaskType.SUBTASK) {//поиск эпика для сабтаска
-            for (Integer key : keyList.keySet()) {
-                if (dataBase.get(keyList.get(key)).getType() == TaskType.EPIC) {
-                    var subList = dataBase.get(keyList.get(key)).getSubList();
-                    if (subList.contains(id)) { //установка эпика в IN_Progress при изменении саба.
-                        dataBase.get(keyList.get(key)).setStatus(Status.IN_PROGRESS);
-                    }
-                }
-            }
-        }
-        dataBase.get(keyList.get(id)).setStatus(Status.IN_PROGRESS);
-        System.out.println("Задача в процессе выполнения..");
-    }
-
-    void deletePos(int id) {
-        dataBase.remove(keyList.get(id));
-        keyList.remove(id);
-        System.out.println("Задача удалена");
-    }
-
-    void eraseAll() {
-
-        dataBase.clear();
-        keyList.clear();
-
-        System.out.println("Данные удалены");
-    }
 }
