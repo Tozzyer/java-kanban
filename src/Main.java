@@ -1,18 +1,16 @@
-import java.util.Scanner;
-//rev3
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("Testing..");
         TaskManager master = new TaskManager();
-        Task task1 = new Task("1", "Поменять колёса", Status.NEW);
-        Task task2 = new Task("2", "Помыть машину", Status.NEW);
-        Epic epic1 = new Epic("3", "Накачать все колёса", Status.NEW);
+        Task task1 = new Task("1", "проверка DONE", Status.NEW);
+        Task task2 = new Task("2", "Не трогать", Status.NEW);
+        Epic epic1 = new Epic("3", "проверка in progress", Status.NEW);
         SubTask sub1 = new SubTask("6", "Sub 1", Status.NEW);
         SubTask sub2 = new SubTask("7", "Sub 2", Status.NEW);
         SubTask sub3 = new SubTask("8", "Sub 3", Status.NEW);
         SubTask sub4 = new SubTask("9", "Sub 4", Status.NEW);
-        Epic epic2 = new Epic("4", "Полетать", Status.NEW);
+        Epic epic2 = new Epic("4", "проверка DONE", Status.NEW);
         SubTask sub5 = new SubTask("10", "Заправить 98", Status.NEW);
         SubTask sub6 = new SubTask("11", "Подать питание", Status.NEW);
         SubTask sub7 = new SubTask("12", "Включить", Status.NEW);

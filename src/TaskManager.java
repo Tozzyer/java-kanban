@@ -55,7 +55,7 @@ public class TaskManager {
 
     //Получение по идентификатору
     Epic getEpicList(Integer id) {
-        System.out.println("Object: " + epicList.get(id));
+
         return epicList.get(id);
     }
 

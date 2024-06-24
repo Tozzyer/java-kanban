@@ -1,5 +1,5 @@
 import java.util.Objects;
-//rev3
+
 public class Task {
 
     private Integer id;//id задачи
