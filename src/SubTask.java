@@ -1,6 +1,15 @@
+import java.util.ArrayList;
 
 public class SubTask extends Task {
-    SubTask(String taskName, String content, Status status) {
+    private final Integer masterId;
+    ArrayList<Integer> epicAssign = new ArrayList<>();
+
+    SubTask(String taskName, String content, Status status, Integer masterId) {
         super(taskName, content, status);
+        this.masterId = masterId;
+    }
+
+    public Integer getMasterId() {
+        return masterId;
     }
 }

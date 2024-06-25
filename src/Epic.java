@@ -1,32 +1,33 @@
-
 import java.util.HashMap;
 
 public class Epic extends Task {
-    HashMap<Integer, SubTask> epicSubList = new HashMap<>();
+    HashMap<Integer, SubTask> epicSubHashMap = new HashMap<>();
 
-    Epic(String taskName, String content,  Status status) {
+    Epic(String taskName, String content, Status status) {
         super(taskName, content, status);
     }
 
     void addSubTask(SubTask subTask) {
-        epicSubList.put(subTask.getId(), subTask);
+        epicSubHashMap.put(subTask.getId(), subTask);
     }
-    void printAllSubList(){
-        for (SubTask subTask : epicSubList.values()) {
+
+    void printAllEpicSubTasks() {
+        for (SubTask subTask : epicSubHashMap.values()) {
             System.out.println("Obj: " + subTask);
         }
     }
-    void statusUpdate (){
-        if(epicSubList.isEmpty()){
+
+    void statusUpdate() {
+        if (epicSubHashMap.isEmpty()) {
             setStatus(Status.NEW);
             return;
-        }else{
-            for (SubTask subTask : epicSubList.values()){
-                if(subTask.getStatus()==Status.IN_PROGRESS){//Хотя бы один In Progress
+        } else {
+            for (SubTask subTask : epicSubHashMap.values()) {
+                if (subTask.getStatus() == Status.IN_PROGRESS) {//Хотя бы один In Progress
                     setStatus(Status.IN_PROGRESS);
                     return;
-                } else if (subTask.getStatus()==Status.NEW){
-                   return;
+                } else if (subTask.getStatus() == Status.NEW) {
+                    return;
                 } else {
                     setStatus(Status.DONE);
                 }
@@ -34,8 +35,13 @@ public class Epic extends Task {
         }
 
     }
-    void clearSub(){
-        epicSubList.clear();
+
+    void clearSub() {
+        epicSubHashMap.clear();
         setStatus(Status.NEW);
+    }
+
+    public HashMap<Integer, SubTask> getEpicSubHashMap() {
+        return epicSubHashMap;
     }
 }
