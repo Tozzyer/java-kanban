@@ -5,123 +5,103 @@ public class TaskManager {
     //Хранение всех типов
     private Integer taskId = 0;
     //все переменные хранилищ private final и не используй в названии List. Это тип коллекций нельзя использовать в названии переменных
-    private final HashMap<Integer, Task> taskHashMap = new HashMap<>();
-    private final HashMap<Integer, Epic> epicHashMap = new HashMap<>();
-    private final HashMap<Integer, SubTask> subHashMap = new HashMap<>();
+    private final HashMap<Integer, Task> tasks = new HashMap<>();
+    private final HashMap<Integer, Epic> epics = new HashMap<>();
+    private final HashMap<Integer, SubTask> subs = new HashMap<>();
 
     //Тип задач Regular
-    //Метод печати для отладки
-    public void printAllTask() {
-        for (Integer key : taskHashMap.keySet()) {
-            System.out.println("ID: " + key + ". Object: " + taskHashMap.get(key));
-        }
-    }
 
-    //Получение всех задач. В виде коллекции, ArrayList или иного массива?
+
+    //Получение всех задач
     public Collection<Task> getAllTasks() {
-        return taskHashMap.values();
+        return tasks.values();
     }
 
     //Получение по идентификатору
     public Task getTaskValue(Integer id) {
-        return taskHashMap.get(id);
+        return tasks.get(id);
     }
 
     //Удаление всех задач
     public void eraseTaskHashMap() {
-        taskHashMap.clear();
+        tasks.clear();
     }
 
     //Создание задачи
     public void addTask(Task task) {
         taskId++;
-        taskHashMap.put(taskId, task);
+        tasks.put(taskId, task);
         task.setId(taskId);
     }
 
     //Обновление задачи
     public void updateTask(Task task, Integer id) {
-        taskHashMap.put(taskId, task);
+        tasks.put(taskId, task);
         task.setId(taskId);
     }
 
     //Удаление по идентификатору
     public void removeTask(Integer id) {
-        taskHashMap.remove(id);
+        tasks.remove(id);
     }
 
     //Тип задач Epic
-    //Печать для отладки
-    public void printAllEpic() {
-        for (Integer key : epicHashMap.keySet()) {
-            System.out.println("ID: " + key + ". Object: " + epicHashMap.get(key));
-        }
-    }
 
     //Получение всех эпик задач
     public Collection<Epic> getAllEpics() {
-        return epicHashMap.values();
+        return epics.values();
     }
 
     //Получение по идентификатору
     public Epic getEpicValue(Integer id) {
 
-        return epicHashMap.get(id);
+        return epics.get(id);
     }
 
     //Удаление всех задач
     public void eraseEpicHashMap() {
         eraseSubHashMap();
-        epicHashMap.clear();
+        epics.clear();
     }
 
     //Создание задачи
     public void addEpic(Epic task) {
         taskId++;
-        epicHashMap.put(taskId, task);
+        epics.put(taskId, task);
         task.setId(taskId);
     }
 
     //Обновление задачи
-    public void updateEpic(Epic task, Integer id) {
-        epicHashMap.put(taskId, task);
+    public void updateEpic(Epic task) {
+        epics.put(taskId, task);
         task.setId(taskId);
     }
 
     //Удаление по идентификатору
     public void removeEpic(Integer id) {
-        for (Integer key : getEpicValue(id).getEpicSubHashMap().keySet()) {
-            subHashMap.remove(key);
+        for (Integer key : getEpicValue(id).getEpicSubs().keySet()) {
+            subs.remove(key);
         }
-        epicHashMap.remove(id);
+        epics.remove(id);
     }
 
-    //Получение списка всех подзадач определённого эпика
-    public void printEpicSlaves(Integer epicId) {
-        getEpicValue(epicId).printAllEpicSubTasks();
-    }
-    //Тип задач SubTask:
 
-    //Печать
-    public void printAllSubs() {
-        for (Integer key : subHashMap.keySet()) {
-            System.out.println("ID: " + key + ". Object: " + subHashMap.get(key));
-        }
-    }
+
+
 
     public Collection<SubTask> getAllSubs() {
-        return subHashMap.values();
+        return subs.values();
     }
 
     //Получение по идентификатору
     public SubTask getSubValue(Integer id) {
-        return subHashMap.get(id);
+        return subs.get(id);
     }
 
     //Удаление всех подзадач (без удаления эпиков. Эпики выставляются в статус NEW, так как подзадач нет.)
     public void eraseSubHashMap() {
-        subHashMap.clear();
-        for (Epic epic : epicHashMap.values()) {
+        subs.clear();
+        for (Epic epic : epics.values()) {
             epic.clearSub();
             epic.statusUpdate();
         }
@@ -131,26 +111,25 @@ public class TaskManager {
     //Создание задачи, добавление к существующей Epic
     public void addSub(SubTask task) {
         taskId++;
-        subHashMap.put(taskId, task);
+        subs.put(taskId, task);
         task.setId(taskId);
         getEpicValue(task.getMasterId()).addSubTask(task);
         getEpicValue(task.getMasterId()).statusUpdate();
     }
 
     //Обновление задачи
-    public void updateSubTask(SubTask task, Integer id, Integer epicId) {
-        subHashMap.put(taskId, task);
-        task.setId(taskId);
-        epicHashMap.get(epicId).addSubTask(task);
-        getEpicValue(epicId).statusUpdate();
+    public void updateSubTask(SubTask task) {
+        subs.put(task.getId(), task);
+        epics.get(task.getMasterId()).addSubTask(task);
+        getEpicValue(task.getMasterId()).statusUpdate();
     }
 
     //Удаление по идентификатору
     public void removeSubTask(Integer id) {
-        subHashMap.remove(id);
-        for (Epic epic : epicHashMap.values()) {
-            if (epic.epicSubHashMap.containsKey(id)) {
-                epic.epicSubHashMap.remove(id);
+        subs.remove(id);
+        for (Epic epic : epics.values()) {
+            if (epic.epicSubs.containsKey(id)) {
+                epic.epicSubs.remove(id);
                 epic.statusUpdate();
             }
         }
