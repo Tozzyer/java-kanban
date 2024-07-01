@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 public class InMemoryTaskManager implements TaskManager {
@@ -8,7 +9,25 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subs = new HashMap<>();
+    private final ArrayList<Integer> lastHistory = new ArrayList<>();
 
+
+    //Метод сохранения последних десяти позиций
+
+    @Override
+    public ArrayList<Integer> getHistory() {//Дореализовать
+        return lastHistory;
+    }
+
+    @Override
+    public void updateHistory(Integer id) {
+        if (lastHistory.size()>10){
+            lastHistory.removeFirst();
+            lastHistory.add(id);
+        } else {
+            lastHistory.add(id);
+        }
+    }
     //Тип задач Regular
 
 
@@ -20,7 +39,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     //Получение по идентификатору
     @Override
-    public Task getTaskValue(Integer id) {
+    public Task getTask(Integer id) {
+        updateHistory(id);
         return tasks.get(id);
     }
 
@@ -40,10 +60,9 @@ public class InMemoryTaskManager implements TaskManager {
 
     //Обновление задачи
     @Override
-    public void updateTask(Task task, Integer id) {
-        tasks.put(taskId, task);
-        task.setId(taskId);
-    }
+    public void updateTask(Task task) {
+        tasks.put(task.getId(), task);
+        }
 
     //Удаление по идентификатору
     @Override
@@ -61,8 +80,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     //Получение по идентификатору
     @Override
-    public Epic getEpicValue(Integer id) {
-
+    public Epic getEpic(Integer id) {
+        updateHistory(id);
         return epics.get(id);
     }
 
@@ -91,7 +110,7 @@ public class InMemoryTaskManager implements TaskManager {
     //Удаление по идентификатору
     @Override
     public void removeEpic(Integer id) {
-        for (Integer key : getEpicValue(id).getEpicSubs().keySet()) {
+        for (Integer key : getEpic(id).getEpicSubs().keySet()) {
             subs.remove(key);
         }
         epics.remove(id);
@@ -106,7 +125,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 @Override
     //Получение по идентификатору
-    public SubTask getSubValue(Integer id) {
+    public SubTask getSubtask(Integer id) {
+        updateHistory(id);
         return subs.get(id);
     }
 
@@ -127,8 +147,8 @@ public class InMemoryTaskManager implements TaskManager {
         taskId++;
         subs.put(taskId, task);
         task.setId(taskId);
-        getEpicValue(task.getMasterId()).addSubTask(task);
-        getEpicValue(task.getMasterId()).statusUpdate();
+        getEpic(task.getMasterId()).addSubTask(task);
+        getEpic(task.getMasterId()).statusUpdate();
     }
 
     //Обновление задачи
@@ -136,7 +156,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void updateSubTask(SubTask task) {
         subs.put(task.getId(), task);
         epics.get(task.getMasterId()).addSubTask(task);
-        getEpicValue(task.getMasterId()).statusUpdate();
+        getEpic(task.getMasterId()).statusUpdate();
     }
 
     //Удаление по идентификатору
