@@ -9,23 +9,33 @@ public class InMemoryTaskManager implements TaskManager {
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subs = new HashMap<>();
-    private final ArrayList<Integer> lastHistory = new ArrayList<>();
+    private final ArrayList<Integer> taskHistory = new ArrayList<>();
 
 
     //Метод сохранения последних десяти позиций
 
     @Override
-    public ArrayList<Integer> getHistory() {//Дореализовать
-        return lastHistory;
+    public ArrayList<Task> getHistory() {
+        ArrayList<Task> tasRet = new ArrayList<>();
+        for (Integer id : taskHistory) {
+            if(tasks.containsKey(id)){
+                tasRet.add(tasks.get(id));
+            } else if (epics.containsKey(id)){
+                tasRet.add(epics.get(id));
+            } else if (subs.containsKey(id)){
+                tasRet.add(subs.get(id));
+            }
+        }
+        return tasRet;
     }
 
     @Override
     public void updateHistory(Integer id) {
-        if (lastHistory.size()>10){
-            lastHistory.removeFirst();
-            lastHistory.add(id);
+        if (taskHistory.size() > 10) {
+            taskHistory.removeFirst();
+            taskHistory.add(id);
         } else {
-            lastHistory.add(id);
+            taskHistory.add(id);
         }
     }
     //Тип задач Regular
@@ -62,7 +72,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         tasks.put(task.getId(), task);
-        }
+    }
 
     //Удаление по идентификатору
     @Override
@@ -117,13 +127,12 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
 
-
-
-@Override
+    @Override
     public Collection<SubTask> getAllSubs() {
         return subs.values();
     }
-@Override
+
+    @Override
     //Получение по идентификатору
     public SubTask getSubtask(Integer id) {
         updateHistory(id);
