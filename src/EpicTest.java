@@ -12,7 +12,7 @@ class EpicTest {
         Epic epic1 = new Epic("Name", "Content", Status.NEW);
         master.addEpic(epic1);//ID3
 
-            epic1.addSubTask(epic1);//неверный тип данных
+        //    epic1.addSubTask(epic1);//неверный тип данных
 
 
     }
