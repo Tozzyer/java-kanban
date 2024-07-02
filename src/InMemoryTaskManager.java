@@ -12,8 +12,6 @@ public class InMemoryTaskManager implements TaskManager {
     public HistoryManager historian = new InMemoryHistoryManager();
 
 
-
-
     //Получение всех задач
     @Override
     public Collection<Task> getAllTasks() {
@@ -87,7 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpic(Epic task) {
         epics.put(task.getId(), task);
-        }
+    }
 
     //Удаление по идентификатору
     @Override
