@@ -2,7 +2,8 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Testing..");
-        InMemoryTaskManager master = new InMemoryTaskManager();
+        InMemoryTaskManager master = (InMemoryTaskManager) Managers.getDefault();
+        HistoryManager historian = Managers.getDefaultHistory();
         Task task1 = new Task("1", "проверка DONE", Status.NEW);
         Task task2 = new Task("2", "Не трогать", Status.NEW);
         Epic epic1 = new Epic("3", "проверка in progress, New после удаления всех сабов", Status.NEW);
@@ -29,6 +30,15 @@ public class Main {
         master.addSub(sub6);//11
         master.addSub(sub7);//12
         master.addSub(sub8);//13
+        master.getTask(1);
+        master.getEpic(3);
+        master.getSubtask(6);
+        master.getTask(1);
+        master.getEpic(3);
+        master.getSubtask(6);
+        master.getTask(1);
+        master.getEpic(3);
+        master.getSubtask(6);
 
         System.out.println(master.getAllTasks());
         System.out.println(master.getAllEpics());
@@ -51,7 +61,9 @@ public class Main {
         master.updateSubTask(sub8);
         master.removeSubTask(13);
 
-
+        System.out.println("History");
+        System.out.println(master.historian.getHistory());
+        System.out.println("History end");
         System.out.println(master.getAllTasks());
         System.out.println(master.getAllEpics());
         System.out.println(master.getAllSubs());
@@ -79,5 +91,25 @@ public class Main {
         System.out.println(master.getAllEpics());
         System.out.println("Саб (должен ничего не вывести)");
         System.out.println(master.getAllSubs());
+        master.getTask(1);
+        master.getEpic(3);
+        master.getSubtask(6);
+        master.getTask(1);
+        master.getEpic(3);
+        master.getSubtask(6);
+        master.getTask(1);
+        master.getEpic(3);
+        master.getSubtask(6);
+        master.getTask(1);
+        master.getEpic(3);
+        master.getSubtask(6);
+        master.getTask(1);
+        master.getEpic(3);
+        master.getSubtask(6);
+        master.getTask(1);
+        master.getEpic(3);
+        master.getSubtask(6);
+        System.out.println("History");
+        System.out.println(master.historian.getHistory());
     }
 }
