@@ -150,4 +150,10 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
+    //Вызов истории
+    @Override
+    public ArrayList<Task> getHistory() {
+        return historian.getHistory();
+    }
+
 }

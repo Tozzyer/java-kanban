@@ -3,9 +3,6 @@ import java.util.Collection;
 
 public interface TaskManager {
 
-
-
-
     public Collection<Task> getAllTasks();
     public Task getTask(Integer id);
     public void eraseTaskHashMap();
@@ -24,5 +21,6 @@ public interface TaskManager {
     public void addSub(SubTask task);
     public void updateSubTask(SubTask task);
     public void removeSubTask(Integer id);
+    public ArrayList<Task> getHistory();
 
 }

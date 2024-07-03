@@ -91,7 +91,7 @@ class InMemoryTaskManagerTest {
         historyTest.removeFirst();//стёрли первый
         master.getTask(2);
         historyTest.add(task2);//добавили 11 раз
-        Assertions.assertEquals(historyTest, master.historian.getHistory());//вернули и сравнили
+        Assertions.assertEquals(historyTest, master.getHistory());//вернули и сравнили
     }
 
 
