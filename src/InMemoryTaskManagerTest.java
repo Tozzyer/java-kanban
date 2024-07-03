@@ -1,11 +1,16 @@
+import manager.HistoryManager;
+import manager.InMemoryTaskManager;
+import manager.Managers;
+import model.Epic;
+import model.Status;
+import model.SubTask;
+import model.Task;
 import org.junit.jupiter.api.Assertions;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class InMemoryTaskManagerTest {
 
@@ -41,11 +46,11 @@ class InMemoryTaskManagerTest {
         sub6 = new SubTask("11", "Sub 6", Status.NEW, 4);
         sub7 = new SubTask("12", "Sub 7", Status.NEW, 4);
         sub8 = new SubTask("13", "Sub 8", Status.NEW, 4);
-        epic3 = new Epic("5", "Epic 3", Status.NEW);
+        epic3 = new Epic("5", "model.Epic 3", Status.NEW);
     }
 
     @Test
-        //Тест проверяет, что InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id
+        //Тест проверяет, что manager.InMemoryTaskManager действительно добавляет задачи разного типа и может найти их по id
     void addTasksAndCheckIdTest() {
 
         master.addTask(task1);
@@ -93,6 +98,4 @@ class InMemoryTaskManagerTest {
         historyTest.add(task2);//добавили 11 раз
         Assertions.assertEquals(historyTest, master.getHistory());//вернули и сравнили
     }
-
-
 }

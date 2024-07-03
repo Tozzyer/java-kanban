@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Objects;
 public class Task {
 
@@ -8,7 +10,7 @@ public class Task {
 
     //Конструктор
 
-    Task(String taskName, String content, Status status) {
+    public Task(String taskName, String content, Status status) {
         this.status = status;
         this.taskName = taskName;
         this.content = content;
@@ -62,7 +64,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "model.Task{" +
                 "id=" + id +
                 ", taskName='" + taskName + '\'' +
                 ", status=" + status +

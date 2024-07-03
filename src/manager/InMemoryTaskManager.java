@@ -1,3 +1,9 @@
+package manager;
+
+import model.Epic;
+import model.SubTask;
+import model.Task;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -51,7 +57,7 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.remove(id);
     }
 
-    //Тип задач Epic
+    //Тип задач model.Epic
 
     //Получение всех эпик задач
     @Override
@@ -120,7 +126,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
 
-    //Создание задачи, добавление к существующей Epic
+    //Создание задачи, добавление к существующей model.Epic
     @Override
     public void addSub(SubTask task) {
         taskId++;
@@ -143,8 +149,8 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeSubTask(Integer id) {
         subs.remove(id);
         for (Epic epic : epics.values()) {
-            if (epic.epicSubs.containsKey(id)) {
-                epic.epicSubs.remove(id);
+            if (epic.getEpicSubs().containsKey(id)) {
+                epic.getEpicSubs().remove(id);
                 epic.statusUpdate();
             }
         }

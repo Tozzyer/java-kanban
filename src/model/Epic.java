@@ -1,13 +1,15 @@
+package model;
+
 import java.util.HashMap;
 
 public class Epic extends Task {
     HashMap<Integer, SubTask> epicSubs = new HashMap<>();
 
-    Epic(String taskName, String content, Status status) {
+    public Epic(String taskName, String content, Status status) {
         super(taskName, content, status);
     }
 
-    void addSubTask(SubTask subTask) {
+    public void addSubTask(SubTask subTask) {
         epicSubs.put(subTask.getId(), subTask);
     }
 
@@ -17,7 +19,7 @@ public class Epic extends Task {
         }
     }
 
-    void statusUpdate() {
+    public void statusUpdate() {
         if (epicSubs.isEmpty()) {
             setStatus(Status.NEW);
             return;
@@ -36,7 +38,7 @@ public class Epic extends Task {
 
     }
 
-    void clearSub() {
+    public void clearSub() {
         epicSubs.clear();
         setStatus(Status.NEW);
     }
