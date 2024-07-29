@@ -11,7 +11,7 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void add(Task task) {
-  taskHistory.add(task);
+        taskHistory.add(task);
     }
 
     @Override
