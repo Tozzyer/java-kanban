@@ -28,5 +28,5 @@ public interface TaskManager {
     public void updateSubTask(SubTask task);
     public void removeSubTask(Integer id);
     public ArrayList<Task> getHistory();
-
+    public void remove(int id);
 }

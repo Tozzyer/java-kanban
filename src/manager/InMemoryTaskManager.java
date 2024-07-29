@@ -7,11 +7,12 @@ import model.Task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+
 public class InMemoryTaskManager implements TaskManager {
 
     //Хранение всех типов
     private Integer taskId = 0;
-    //все переменные хранилищ private final и не используй в названии List. Это тип коллекций нельзя использовать в названии переменных
+
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, SubTask> subs = new HashMap<>();
@@ -160,6 +161,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Task> getHistory() {
         return historian.getHistory();
+    }
+
+    @Override
+    public void remove(int id) {
+        historian.remove(id);
     }
 
 }

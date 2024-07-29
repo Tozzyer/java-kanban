@@ -3,23 +3,24 @@ package manager;
 import model.Task;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 public class InMemoryHistoryManager implements HistoryManager {
 
-    private final ArrayList<Task> taskHistory = new ArrayList<>();
+    private final LinkedHashSet<Task> taskHistory = new LinkedHashSet<>();
 
     @Override
     public void add(Task task) {
-        if (taskHistory.size() >= 10) {
-            taskHistory.removeFirst();
-            taskHistory.add(task);
-        } else {
-            taskHistory.add(task);
-        }
+  taskHistory.add(task);
+    }
+
+    @Override
+    public void remove(int id) {
+        taskHistory.removeIf(iter -> id == iter.getId());
     }
 
     @Override
     public ArrayList<Task> getHistory() {
-        return taskHistory;
+        return new ArrayList<>(taskHistory);
     }
 }
