@@ -91,7 +91,7 @@ class InMemoryTaskManagerTest {
             master.getTask(1);
             master.getTask(2);
             master.getEpic(3);
-            }
+        }
         master.getTask(1);
         master.getTask(2);
         Assertions.assertEquals(new ArrayList<>(historyTest), master.getHistory());//вернули и сравнили
@@ -113,7 +113,7 @@ class InMemoryTaskManagerTest {
         master.getTask(1);
         master.getTask(2);
         master.remove(1);
-        Assertions.assertEquals(new ArrayList<>(historyTest), master.getHistory());//вернули и сравнили
+        Assertions.assertEquals(new ArrayList<>(historyTest), master.getHistory());
     }
 
 
