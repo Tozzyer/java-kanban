@@ -80,45 +80,41 @@ class InMemoryTaskManagerTest {
 
     @Test
     void historyCheck() {
-        LinkedHashSet<Task> historyTest = new LinkedHashSet<>();
+        ArrayList<Task> historyTest = new ArrayList<>();
+        historyTest.add(epic3);
+        historyTest.add(task1);
+        historyTest.add(task2);
         master.addTask(task1);
         master.addTask(task2);
-        master.addEpic(epic1);
+        master.addEpic(epic3);
         for (int i = 0; i < 3; i++) { //добавили 9 раз
-            master.getTask(2);
-            historyTest.add(task2);
             master.getTask(1);
-            historyTest.add(task1);
+            master.getTask(2);
             master.getEpic(3);
-            historyTest.add(epic1);
-        }
-        master.getTask(2);
-        historyTest.add(task1); //добавили 10 раз
+            }
         master.getTask(1);
-        historyTest.add(task2);//добавили 11 раз
+        master.getTask(2);
         Assertions.assertEquals(new ArrayList<>(historyTest), master.getHistory());//вернули и сравнили
     }
 
     @Test
-    void historyDeletingProcessCheck() {
-        LinkedHashSet<Task> historyTest = new LinkedHashSet<>();
+    void historyCheckDeleteCentralNode() {
+        ArrayList<Task> historyTest = new ArrayList<>();
+        historyTest.add(epic3);
+        historyTest.add(task2);
         master.addTask(task1);
         master.addTask(task2);
-        master.addEpic(epic1);
+        master.addEpic(epic3);
         for (int i = 0; i < 3; i++) { //добавили 9 раз
-            master.getTask(2);
-            historyTest.add(task2);
             master.getTask(1);
-            historyTest.add(task1);
+            master.getTask(2);
             master.getEpic(3);
-            historyTest.add(epic1);
         }
-        master.getTask(2);
-        historyTest.add(task2); //добавили 10 раз
         master.getTask(1);
-        historyTest.add(task1);//добавили 11 раз
-        historyTest.remove(task2);
-        master.remove(2);
+        master.getTask(2);
+        master.remove(1);
         Assertions.assertEquals(new ArrayList<>(historyTest), master.getHistory());//вернули и сравнили
     }
+
+
 }
