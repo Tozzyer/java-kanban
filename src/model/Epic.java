@@ -25,7 +25,7 @@ public class Epic extends Task {
             return;
         } else {
             for (SubTask subTask : epicSubs.values()) {
-                if (subTask.getStatus() == Status.IN_PROGRESS) {//Хотя бы один In Progress
+                if (subTask.getStatus() == Status.IN_PROGRESS) {
                     setStatus(Status.IN_PROGRESS);
                     return;
                 } else if (subTask.getStatus() == Status.NEW) {
