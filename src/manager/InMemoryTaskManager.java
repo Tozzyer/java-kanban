@@ -163,9 +163,5 @@ public class InMemoryTaskManager implements TaskManager {
         return historian.getHistory();
     }
 
-    @Override
-    public void remove(int id) {
-        historian.remove(id);
-    }
 
 }

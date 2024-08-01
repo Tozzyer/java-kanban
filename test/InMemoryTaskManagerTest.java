@@ -111,7 +111,7 @@ class InMemoryTaskManagerTest {
         }
         master.getTask(1);
         master.getTask(2);
-        master.remove(1);
+        master.historian.remove(1);
         Assertions.assertEquals(new ArrayList<>(historyTest), master.getHistory());
     }
 

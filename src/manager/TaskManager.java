@@ -47,5 +47,4 @@ public interface TaskManager {
 
     public ArrayList<Task> getHistory();
 
-    public void remove(int id);
 }
