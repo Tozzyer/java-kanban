@@ -18,17 +18,31 @@ import static java.lang.Integer.parseInt;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     //Новые поля
-    Path taskFile = Paths.get("csvTaskFile.csv");
+    public Path taskFile;
     HashMap<Integer, Task> uniMap = new HashMap<>();
+
+    //Конструктор для тестов
+    public FileBackedTaskManager(String test) {
+
+        try {
+            taskFile = Files.createTempFile("testFile", ".csv");
+            taskFile.toFile().deleteOnExit();
+        } catch (IOException ex) {
+            System.out.println("Ошибка при создании файла");
+        }
+    }
 
 
     public FileBackedTaskManager() {
+        this.taskFile = Paths.get("csvTaskFile.csv");
         try {
             if (!Files.exists(taskFile)) {
                 Files.createFile(taskFile);
-            } else if (Files.size(taskFile) != 0) {
-                readFromFile();
             }
+            //Опция для включения автозагрузки при инициализации
+//            else if (Files.size(taskFile) != 0) {
+//                loadFromFile();
+//            }
         } catch (IOException ex) {
             System.out.println("Ошибка при создании файла");
         }
@@ -65,6 +79,78 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void removeTask(Integer id) {
         tasks.remove(id);
+        save();
+    }
+
+    //Удаление всех задач
+    @Override
+    public void eraseTaskHashMap() {
+        tasks.clear();
+        save();
+    }
+
+    //Обновление задачи
+    @Override
+    public void updateTask(Task task) {
+        tasks.put(task.getId(), task);
+        save();
+    }
+
+    //Удаление всех задач
+    @Override
+    public void eraseEpicHashMap() {
+        eraseSubHashMap();
+        epics.clear();
+        save();
+    }
+
+    //Обновление задачи
+    @Override
+    public void updateEpic(Epic task) {
+        epics.put(task.getId(), task);
+        save();
+    }
+
+    //Удаление по идентификатору
+    @Override
+    public void removeEpic(Integer id) {
+        for (Integer key : epics.get(id).getEpicSubs().keySet()) {
+            subs.remove(key);
+        }
+        epics.remove(id);
+        save();
+    }
+
+    //Удаление всех подзадач (без удаления эпиков. Эпики выставляются в статус NEW, так как подзадач нет.)
+    @Override
+    public void eraseSubHashMap() {
+        subs.clear();
+        for (Epic epic : epics.values()) {
+            epic.clearSub();
+            epic.statusUpdate();
+        }
+        save();
+    }
+
+    //Обновление задачи
+    @Override
+    public void updateSubTask(SubTask task) {
+        subs.put(task.getId(), task);
+        epics.get(task.getMasterId()).addSubTask(task);
+        epics.get(task.getMasterId()).statusUpdate();
+        save();
+    }
+
+    //Удаление по идентификатору
+    @Override
+    public void removeSubTask(Integer id) {
+        subs.remove(id);
+        for (Epic epic : epics.values()) {
+            if (epic.getEpicSubs().containsKey(id)) {
+                epic.getEpicSubs().remove(id);
+                epic.statusUpdate();
+            }
+        }
         save();
     }
 
@@ -117,7 +203,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     //Метод инициализирует содержимое CSV файла в память программы
-    public void readFromFile() {
+    public void loadFromFile() {
         ArrayList<String> data = new ArrayList<>();
         try {
             data = (ArrayList<String>) Files.readAllLines(taskFile);
@@ -146,26 +232,35 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         switch (resType) {
             case "Task":
                 Task task = new Task(resTaskName, resContent, resTaskStatus);
-                taskId = resId-1;
+                taskId = resId - 1;
                 addTask(task);
                 task.setId(resId);
                 taskId = resId;
                 break;
             case "Epic":
                 Epic epic = new Epic(resTaskName, resContent, resTaskStatus);
-                taskId = resId-1;
+                taskId = resId - 1;
                 addEpic(epic);
                 epic.setId(resId);
                 taskId = resId;
                 break;
             case "SubTask":
                 SubTask subTask = new SubTask(resTaskName, resContent, resTaskStatus, resEpicNo);
-                taskId = resId-1;
+                taskId = resId - 1;
                 addSub(subTask);
                 subTask.setId(resId);
                 taskId = resId;
                 break;
         }
+    }
+
+    public void eraseFile() {
+        try {
+            Files.newBufferedWriter(taskFile).close();
+        } catch (IOException e) {
+            System.out.println("Ошибка при удалении данных");
+        }
+
     }
 
 }
