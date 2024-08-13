@@ -15,7 +15,6 @@ public class Task {
         this.status = status;
         this.taskName = taskName;
         this.content = content;
-
     }
 
     public Integer getId() {
