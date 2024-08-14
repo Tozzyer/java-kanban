@@ -19,16 +19,15 @@ import static java.lang.Integer.parseInt;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     //Новые поля
     public Path taskFile;
-    HashMap<Integer, Task> uniMap = new HashMap<>();
+
 
     //Конструктор для тестов
     public FileBackedTaskManager(String test) {
 
         try {
-            taskFile = Files.createTempFile("testFile", ".csv");
-            taskFile.toFile().deleteOnExit();
-        } catch (IOException ex) {
-            System.out.println("Ошибка при создании файла");
+            createTempFile();
+        } catch (ManagerSaveException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -36,15 +35,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public FileBackedTaskManager() {
         this.taskFile = Paths.get("csvTaskFile.csv");
         try {
-            if (!Files.exists(taskFile)) {
-                Files.createFile(taskFile);
-            }
-            //Опция для включения автозагрузки при инициализации
-//            else if (Files.size(taskFile) != 0) {
-//                loadFromFile();
-//            }
-        } catch (IOException ex) {
-            System.out.println("Ошибка при создании файла");
+            createFile();
+        } catch (ManagerSaveException ex) {
+            System.out.println(ex.getMessage());
         }
     }
 
@@ -156,8 +149,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     //ДОПОЛНИТЕЛЬНЫЕ ОПЕРАЦИОННЫЕ МЕТОДЫ
     //Метод автосохранения. Содержимое мапы uniMap переносится в файл CSV
-    public void save() {
-        createUniMap();
+    private void save() {
+        HashMap<Integer, Task> uniMap = createUniMap();
         StringBuilder sb = new StringBuilder("id,type,name,status,description,epic\n");
         for (int i = 1; i <= taskId; i++) {
             if (uniMap.containsKey(i)) {
@@ -172,8 +165,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     //Метод формирует хэш-мапу для автосохранения в файл
-    public void createUniMap() {
-        uniMap.clear();
+    private HashMap<Integer, Task> createUniMap() {
+        HashMap<Integer, Task> uniMap = new HashMap<>();
         for (int i = 1; i <= taskId; i++) {
             if (tasks.containsKey(i)) {
                 uniMap.put(i, tasks.get(i));
@@ -183,10 +176,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 uniMap.put(i, subs.get(i));
             }
         }
+        return uniMap;
     }
 
     //Метод формирует линию для записи формата id,type,name,status,description,epic
-    public String lineFormater(Task task) {
+    private String lineFormater(Task task) {
 
         if (task instanceof SubTask) {
             SubTask subTask = (SubTask) task;
@@ -197,13 +191,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     //Метод определяет тип задачи и возвращает в виде строки
-    public String getTaskType(Task task) {
+    private String getTaskType(Task task) {
         Class<?> o = task.getClass();
         return o.getSimpleName();
     }
 
     //Метод инициализирует содержимое CSV файла в память программы
-    public void loadFromFile() {
+    private void loadFromFile() {
         ArrayList<String> data = new ArrayList<>();
         try {
             data = (ArrayList<String>) Files.readAllLines(taskFile);
@@ -220,7 +214,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     //Вспомогателльный метод readFromFile. Метод бьёт на строки id,type,name,status,description,epic
     // 0 - ID, 1 - TYPE, 2 - NAME, 3 - STATUS, 4 - DESCRIPTION, 5 - EPIC
-    public void separateLines(String initialString) {
+    private void separateLines(String initialString) {
         String[] lines = initialString.split(",");
         int resId = parseInt(lines[0]);
         String resType = lines[1];
@@ -254,13 +248,33 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    public void eraseFile() {
+    private void eraseFile() {
         try {
             Files.newBufferedWriter(taskFile).close();
         } catch (IOException e) {
             System.out.println("Ошибка при удалении данных");
         }
 
+    }
+
+    private void createTempFile() throws ManagerSaveException {
+        try {
+            taskFile = Files.createTempFile("testFile", ".csv");
+            taskFile.toFile().deleteOnExit();
+        } catch (IOException ex) {
+            throw new ManagerSaveException("Ошибка при создании временного файла");
+        }
+    }
+
+    private void createFile() throws ManagerSaveException {
+
+        try {
+            if (!Files.exists(taskFile)) {
+                Files.createFile(taskFile);
+            }
+        } catch (IOException ex) {
+            throw new ManagerSaveException("Ошибка при создании постоянного CSV файла");
+        }
     }
 
 }
