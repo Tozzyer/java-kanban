@@ -7,6 +7,7 @@ import model.Task;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -164,6 +165,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public ArrayList<Task> getHistory() {
         return historian.getHistory();
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return List.of();
     }
 
 

@@ -67,20 +67,45 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public void addEpic(Epic task) {
-        taskId++;
-        epics.put(taskId, task);
-        task.setId(taskId);
-        save();
+        boolean isCrossed = tasks.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || epics.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || subs.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+        if(isCrossed){
+            System.out.println("На это время уже назначена задача");
+        }else {
+            taskId++;
+            epics.put(taskId, task);
+            task.setId(taskId);
+            save();
+        }
     }
 
     @Override
     public void addSub(SubTask task) {
-        taskId++;
-        subs.put(taskId, task);
-        task.setId(taskId);
-        epics.get(task.getMasterId()).addSubTask(task);
-        epics.get(task.getMasterId()).statusUpdate();
-        save();
+        boolean isCrossed = tasks.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || epics.values().stream()
+                .filter(entry -> !entry.getId().equals(task.getMasterId()))
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || subs.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+        if(isCrossed){
+            System.out.println("На это время уже назначена задача");
+        }else {
+            taskId++;
+            subs.put(taskId, task);
+            task.setId(taskId);
+            epics.get(task.getMasterId()).addSubTask(task);
+            epics.get(task.getMasterId()).statusUpdate();
+            save();
+        }
     }
 
     //Удаление по идентификатору

@@ -24,6 +24,8 @@ public class FileBackedTaskManagerTest {
     private static Task task2;
     private static Epic epic1;
     private static SubTask sub1;
+    private static SubTask sub2;
+    private static SubTask sub3;
 
     @BeforeEach
     void managersCreationUtilityTest() {
