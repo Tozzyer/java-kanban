@@ -12,6 +12,8 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.TreeSet;
 
 import static java.lang.Integer.parseInt;
 
@@ -19,6 +21,7 @@ import static java.lang.Integer.parseInt;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     //Новые поля
     public Path taskFile;
+    public TreeSet<Task> timeSortedTasks = new TreeSet<>();
 
 
     //Конструктор для тестов
@@ -44,10 +47,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     //Начало переписанных методов
     @Override
     public void addTask(Task task) {
-        taskId++;
-        tasks.put(taskId, task);
-        task.setId(taskId);
-        save();
+        boolean isCrossed = tasks.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || epics.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || subs.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+        if(isCrossed){
+            System.out.println("На это время уже назначена задача");
+        }else{
+            taskId++;
+            tasks.put(taskId, task);
+            task.setId(taskId);
+            save();
+        }
     }
 
     @Override
@@ -107,9 +122,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     //Удаление по идентификатору
     @Override
     public void removeEpic(Integer id) {
-        for (Integer key : epics.get(id).getEpicSubs().keySet()) {
-            subs.remove(key);
-        }
+        epics.get(id).getEpicSubs().keySet().forEach(subs::remove);
         epics.remove(id);
         save();
     }
@@ -118,10 +131,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void eraseSubHashMap() {
         subs.clear();
-        for (Epic epic : epics.values()) {
+        epics.values().forEach(epic -> {
             epic.clearSub();
             epic.statusUpdate();
-        }
+        });
         save();
     }
 
@@ -138,23 +151,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void removeSubTask(Integer id) {
         subs.remove(id);
-        for (Epic epic : epics.values()) {
+        epics.values().forEach(epic -> {
             if (epic.getEpicSubs().containsKey(id)) {
                 epic.getEpicSubs().remove(id);
                 epic.statusUpdate();
             }
-        }
+        });
         save();
     }
 
     //ДОПОЛНИТЕЛЬНЫЕ ОПЕРАЦИОННЫЕ МЕТОДЫ
-    //Метод автосохранения. Содержимое мапы uniMap переносится в файл CSV
+    //Метод автосохранения. Содержимое мапы uniMap переносится в файл CSV. И наполняется TreeSet
     private void save() {
         HashMap<Integer, Task> uniMap = createUniMap();
+        timeSortedTasks.clear();
         StringBuilder sb = new StringBuilder("id,type,name,status,description,epic\n");
         for (int i = 1; i <= taskId; i++) {
             if (uniMap.containsKey(i)) {
                 sb.append(lineFormater(uniMap.get(i)) + "\n");
+                timeSortedTasks.add(uniMap.get(i));
             }
         }
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(String.valueOf(taskFile)))) {
@@ -213,7 +228,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     //Вспомогателльный метод readFromFile. Метод бьёт на строки id,type,name,status,description,epic
-    // 0 - ID, 1 - TYPE, 2 - NAME, 3 - STATUS, 4 - DESCRIPTION, 5 - EPIC
+    // 0 - ID, 1 - TYPE, 2 - NAME, 3 - STATUS, 4 - DESCRIPTION, 5 - EPIC, 6 - startTime, 7 - Duration
     private void separateLines(String initialString) {
         String[] lines = initialString.split(",");
         int resId = parseInt(lines[0]);
@@ -277,4 +292,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
+    @Override
+    public List<Task> getPrioritizedTasks(){
+        return new ArrayList<>(timeSortedTasks);
+    }
 }

@@ -4,8 +4,10 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public interface TaskManager {
 
@@ -46,5 +48,7 @@ public interface TaskManager {
     public void removeSubTask(Integer id);
 
     public ArrayList<Task> getHistory();
+
+    public List<Task> getPrioritizedTasks();
 
 }
