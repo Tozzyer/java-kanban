@@ -1,19 +1,15 @@
 import manager.FileBackedTaskManager;
 import manager.HistoryManager;
-import manager.InMemoryTaskManager;
 import manager.Managers;
 import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
 import org.junit.jupiter.api.Assertions;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class FileBackedTaskManagerTest {
@@ -24,8 +20,6 @@ public class FileBackedTaskManagerTest {
     private static Task task2;
     private static Epic epic1;
     private static SubTask sub1;
-    private static SubTask sub2;
-    private static SubTask sub3;
 
     @BeforeEach
     void managersCreationUtilityTest() {

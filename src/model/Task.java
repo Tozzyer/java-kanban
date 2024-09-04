@@ -24,15 +24,27 @@ public class Task implements Comparable<Task> {
     }
 
     public LocalDateTime getEndTime(){
-        return startTime.plus(duration);
+        if (startTime!=null && duration != null){
+            return startTime.plus(duration);
+        } else {
+            return LocalDateTime.MIN;
+        }
     }
 
     public Duration getDuration() {
-        return duration;
+        if (duration != null){
+            return duration;
+        } else {
+            return Duration.ofMinutes(0);
+        }
     }
 
     public LocalDateTime getStartTime() {
-        return startTime;
+        if (startTime!=null){
+            return startTime;
+        } else {
+            return LocalDateTime.MIN;
+        }
     }
 
     public Integer getId() {
