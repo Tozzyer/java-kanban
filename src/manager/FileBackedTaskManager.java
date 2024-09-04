@@ -55,9 +55,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         isCrossed = isCrossed || subs.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
-        if(isCrossed){
+        if (isCrossed) {
             System.out.println("На это время уже назначена задача");
-        }else{
+        } else {
             taskId++;
             tasks.put(taskId, task);
             task.setId(taskId);
@@ -75,9 +75,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         isCrossed = isCrossed || subs.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
-        if(isCrossed){
+        if (isCrossed) {
             System.out.println("На это время уже назначена задача");
-        }else {
+        } else {
             taskId++;
             epics.put(taskId, task);
             task.setId(taskId);
@@ -96,9 +96,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         isCrossed = isCrossed || subs.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
-        if(isCrossed){
+        if (isCrossed) {
             System.out.println("На это время уже назначена задача");
-        }else {
+        } else {
             taskId++;
             subs.put(taskId, task);
             task.setId(taskId);
@@ -318,7 +318,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public List<Task> getPrioritizedTasks(){
+    public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(timeSortedTasks);
     }
 }

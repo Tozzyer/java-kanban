@@ -54,12 +54,12 @@ public class OtherInterfacesTestSprint8 {
 
     @Test
     void checkTimeManagerPriority() {
-        task1.setStartTime(LocalDateTime.of(2002,1,1,0,10));
+        task1.setStartTime(LocalDateTime.of(2002, 1, 1, 0, 10));
         task1.setDuration(Duration.ofMinutes(10));
-        task2.setStartTime(LocalDateTime.of(2000,1,1,0,0));
+        task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 0));
         task2.setDuration(Duration.ofMinutes(10));
         epic1.setDuration(Duration.ofMinutes(10));
-        epic1.setStartTime(LocalDateTime.of(1990,1,1,0,0));
+        epic1.setStartTime(LocalDateTime.of(1990, 1, 1, 0, 0));
         master.addTask(task2);
         master.addTask(task1);
         master.addEpic(epic1);
@@ -69,37 +69,37 @@ public class OtherInterfacesTestSprint8 {
     }
 
     @Test
-    void checkCrossTimeTest(){
-        task1.setStartTime(LocalDateTime.of(2000,1,1,0,10));
+    void checkCrossTimeTest() {
+        task1.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 10));
         task1.setDuration(Duration.ofMinutes(10));
-        task2.setStartTime(LocalDateTime.of(2000,1,1,0,10));
+        task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 10));
         task2.setDuration(Duration.ofMinutes(10));
         master.addTask(task1);
         master.addTask(task2);
-        task2.setStartTime(LocalDateTime.of(2000,1,1,0,1));
+        task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 1));
         task2.setDuration(Duration.ofMinutes(10));
         master.addTask(task2);
-        task2.setStartTime(LocalDateTime.of(2000,1,1,0,19));
+        task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 19));
         task2.setDuration(Duration.ofMinutes(10));
         master.addTask(task2);
         Assertions.assertEquals(1, master.tasks.size());
-        task2.setStartTime(LocalDateTime.of(2000,1,1,0,20));
+        task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 20));
         task2.setDuration(Duration.ofMinutes(10));
         master.addTask(task2);
         Assertions.assertEquals(2, master.tasks.size());
     }
 
-    void checkEpicTimeUpdate () {
+    void checkEpicTimeUpdate() {
         master.addTask(task1);
         master.addTask(task2);
-        epic1.setStartTime(LocalDateTime.of(2000,1,1,0,10));
+        epic1.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 10));
         epic1.setDuration(Duration.ofMinutes(10));
         master.addEpic(epic1);
-        Assertions.assertEquals(LocalDateTime.of(2000,1,1,0,10), epic1.getStartTime());
-        sub1.setStartTime(LocalDateTime.of(2000,1,1,0,0));
+        Assertions.assertEquals(LocalDateTime.of(2000, 1, 1, 0, 10), epic1.getStartTime());
+        sub1.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 0));
         sub1.setDuration(Duration.ofMinutes(60));
-        Assertions.assertEquals(LocalDateTime.of(2000,1,1,0,0), epic1.getStartTime());
-        Assertions.assertEquals(LocalDateTime.of(2000,1,1,0,60), epic1.getEndTime());
+        Assertions.assertEquals(LocalDateTime.of(2000, 1, 1, 0, 0), epic1.getStartTime());
+        Assertions.assertEquals(LocalDateTime.of(2000, 1, 1, 0, 60), epic1.getEndTime());
     }
 
 }

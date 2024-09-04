@@ -23,8 +23,8 @@ public class Task implements Comparable<Task> {
         this.content = content;
     }
 
-    public LocalDateTime getEndTime(){
-        if (startTime!=null && duration != null){
+    public LocalDateTime getEndTime() {
+        if (startTime != null && duration != null) {
             return startTime.plus(duration);
         } else {
             return LocalDateTime.MIN;
@@ -32,7 +32,7 @@ public class Task implements Comparable<Task> {
     }
 
     public Duration getDuration() {
-        if (duration != null){
+        if (duration != null) {
             return duration;
         } else {
             return Duration.ofMinutes(0);
@@ -40,7 +40,7 @@ public class Task implements Comparable<Task> {
     }
 
     public LocalDateTime getStartTime() {
-        if (startTime!=null){
+        if (startTime != null) {
             return startTime;
         } else {
             return LocalDateTime.MIN;
@@ -116,8 +116,8 @@ public class Task implements Comparable<Task> {
         return this.startTime.compareTo(o.startTime);
     }
 
-    public boolean isTimeCrossed (Task task){
-        return task.getStartTime().isBefore(this.getEndTime())&&task.getEndTime().isAfter(this.getStartTime());
+    public boolean isTimeCrossed(Task task) {
+        return task.getStartTime().isBefore(this.getEndTime()) && task.getEndTime().isAfter(this.getStartTime());
     }
 
     public void setStartTime(LocalDateTime startTime) {
