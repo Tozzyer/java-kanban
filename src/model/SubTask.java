@@ -1,8 +1,6 @@
 package model;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.time.Duration;
 
 public class SubTask extends Task {
     private final Integer masterId;
