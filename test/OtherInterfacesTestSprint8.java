@@ -82,11 +82,11 @@ public class OtherInterfacesTestSprint8 {
         task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 19));
         task2.setDuration(Duration.ofMinutes(10));
         master.addTask(task2);
-        Assertions.assertEquals(1, master.tasks.size());
+        Assertions.assertEquals(1, master.getAllTasks().size());
         task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 20));
         task2.setDuration(Duration.ofMinutes(10));
         master.addTask(task2);
-        Assertions.assertEquals(2, master.tasks.size());
+        Assertions.assertEquals(2, master.getAllTasks().size());
     }
 
     void checkEpicTimeUpdate() {

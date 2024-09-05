@@ -40,7 +40,7 @@ public class FileBackedTaskManagerTest {
         ArrayList<String> data = new ArrayList<>();
 
         try {
-            data = (ArrayList<String>) Files.readAllLines(master.taskFile);
+            data = (ArrayList<String>) Files.readAllLines(master.getTaskFile());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении из файла");
         }
@@ -64,7 +64,7 @@ public class FileBackedTaskManagerTest {
         master.updateTask(task2);
 
         try {
-            data = (ArrayList<String>) Files.readAllLines(master.taskFile);
+            data = (ArrayList<String>) Files.readAllLines(master.getTaskFile());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении из файла");
         }

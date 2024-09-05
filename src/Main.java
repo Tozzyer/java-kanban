@@ -39,9 +39,9 @@ public class Main {
         master.addTask(task2);
         master.addTask(task1);
         master.addEpic(epic1);
-//        master.addSub(sub1);
+        master.addSub(sub1);
         System.out.println(master.getPrioritizedTasks());
-        master.timeSortedTasks.forEach(task -> System.out.println(task.getStartTime()));
+        //master.timeSortedTasks.forEach(task -> System.out.println(task.getStartTime()));
 
     }
 }

@@ -3,22 +3,16 @@ package manager;
 import model.Epic;
 import model.SubTask;
 import model.Task;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
 
-    //Хранение всех типов
     protected Integer taskId = 0;
-
-
-    //SP7 - private изменён на protected для доступа из потомка
-    //SP7 - отладка - сделан public
-    public final HashMap<Integer, Task> tasks = new HashMap<>();
-    public final HashMap<Integer, Epic> epics = new HashMap<>();
-    public final HashMap<Integer, SubTask> subs = new HashMap<>();
+    protected TreeSet<Task> timeSortedTasks = new TreeSet<>();
+    protected final HashMap<Integer, Task> tasks = new HashMap<>();
+    protected final HashMap<Integer, Epic> epics = new HashMap<>();
+    protected final HashMap<Integer, SubTask> subs = new HashMap<>();
     public HistoryManager historian = new InMemoryHistoryManager();
 
 
@@ -28,7 +22,6 @@ public class InMemoryTaskManager implements TaskManager {
         return tasks.values();
     }
 
-    //Получение по идентификатору НЕ ЗАБЫТЬ РАСКОММЕНТИТЬ
     @Override
     public Task getTask(Integer id) {
         historian.add(tasks.get(id));
@@ -168,7 +161,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getPrioritizedTasks() {
-        return List.of();
+        return new ArrayList<>(timeSortedTasks);
     }
 
 

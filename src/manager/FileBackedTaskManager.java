@@ -18,9 +18,9 @@ import static java.lang.Integer.parseInt;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
+
     //Новые поля
-    public Path taskFile;
-    public TreeSet<Task> timeSortedTasks = new TreeSet<>();
+    private Path taskFile;
 
 
     //Конструктор для тестов
@@ -316,8 +316,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    @Override
-    public List<Task> getPrioritizedTasks() {
-        return new ArrayList<>(timeSortedTasks);
+    public Path getTaskFile() {
+        return taskFile;
     }
+
+
 }
