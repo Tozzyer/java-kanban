@@ -37,9 +37,22 @@ public class InMemoryTaskManager implements TaskManager {
     //Создание задачи
     @Override
     public void addTask(Task task) {
-        taskId++;
-        tasks.put(taskId, task);
-        task.setId(taskId);
+        boolean isCrossed = tasks.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || epics.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || subs.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+        if (isCrossed) {
+            System.out.println("На это время уже назначена задача");
+        } else {
+            taskId++;
+            tasks.put(taskId, task);
+            task.setId(taskId);
+            timeSortedTasks.add(task);
+        }
     }
 
     //Обновление задачи
@@ -79,9 +92,22 @@ public class InMemoryTaskManager implements TaskManager {
     //Создание задачи
     @Override
     public void addEpic(Epic task) {
-        taskId++;
-        epics.put(taskId, task);
-        task.setId(taskId);
+        boolean isCrossed = tasks.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || epics.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || subs.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+        if (isCrossed) {
+            System.out.println("На это время уже назначена задача");
+        } else {
+            taskId++;
+            epics.put(taskId, task);
+            task.setId(taskId);
+            timeSortedTasks.add(task);
+        }
     }
 
     //Обновление задачи
@@ -126,11 +152,25 @@ public class InMemoryTaskManager implements TaskManager {
     //Создание задачи, добавление к существующей model.Epic
     @Override
     public void addSub(SubTask task) {
-        taskId++;
-        subs.put(taskId, task);
-        task.setId(taskId);
-        epics.get(task.getMasterId()).addSubTask(task);
-        epics.get(task.getMasterId()).statusUpdate();
+        boolean isCrossed = tasks.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || epics.values().stream()
+                .filter(entry -> !entry.getId().equals(task.getMasterId()))
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+
+        isCrossed = isCrossed || subs.values().stream()
+                .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
+        if (isCrossed) {
+            System.out.println("На это время уже назначена задача");
+        } else {
+            taskId++;
+            subs.put(taskId, task);
+            task.setId(taskId);
+            epics.get(task.getMasterId()).addSubTask(task);
+            epics.get(task.getMasterId()).statusUpdate();
+            timeSortedTasks.add(task);
+        }
     }
 
     //Обновление задачи
@@ -163,6 +203,5 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getPrioritizedTasks() {
         return new ArrayList<>(timeSortedTasks);
     }
-
 
 }

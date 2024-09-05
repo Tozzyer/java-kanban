@@ -101,5 +101,4 @@ public class OtherInterfacesTestSprint8 {
         Assertions.assertEquals(LocalDateTime.of(2000, 1, 1, 0, 0), epic1.getStartTime());
         Assertions.assertEquals(LocalDateTime.of(2000, 1, 1, 0, 60), epic1.getEndTime());
     }
-
 }

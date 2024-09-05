@@ -11,8 +11,6 @@ import java.nio.file.Paths;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.TreeSet;
 
 import static java.lang.Integer.parseInt;
 
@@ -319,6 +317,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public Path getTaskFile() {
         return taskFile;
     }
-
 
 }
