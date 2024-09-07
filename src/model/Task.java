@@ -22,6 +22,8 @@ public class Task implements Comparable<Task> {
         this.content = content;
     }
 
+
+
     public LocalDateTime getEndTime() {
         if (startTime != null && duration != null) {
             return startTime.plus(duration);
