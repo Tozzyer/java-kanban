@@ -19,7 +19,7 @@ public class HttpTaskServer {
     FileBackedTaskManager master = new FileBackedTaskManager();
 
     public HttpTaskServer() throws IOException {
-        this.server = HttpServer.create(new InetSocketAddress(ApplicationPort), 0);
+        this.server = HttpServer.create(new InetSocketAddress(applicationPort), 0);
     }
 
     public void startServer() {
@@ -29,7 +29,7 @@ public class HttpTaskServer {
         server.createContext("/history", new HistoryHandler(master));
         server.createContext("/prioritized", new PriorityHandler(master));
         server.start();
-        System.out.println("Сервер запущен на порту: " + ApplicationPort);
+        System.out.println("Сервер запущен на порту: " + applicationPort);
     }
 
     public void stopServer() {

@@ -1,4 +1,4 @@
-package AdaptersForJson;
+package adaptersForJson;
 
 import com.google.gson.*;
 import model.Epic;

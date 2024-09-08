@@ -1,6 +1,6 @@
 package handlers;
 
-import AdaptersForJson.EpicAdapter;
+import adaptersForJson.EpicAdapter;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
