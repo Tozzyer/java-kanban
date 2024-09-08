@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 public class HttpTaskServer {
 
     private HttpServer server;
-    final private int ApplicationPort = 8080;
-    FileBackedTaskManager master = new FileBackedTaskManager();
+    final private int applicationPort = 8080;
+    private FileBackedTaskManager master = new FileBackedTaskManager();
 
     public HttpTaskServer() throws IOException {
         this.server = HttpServer.create(new InetSocketAddress(ApplicationPort), 0);
