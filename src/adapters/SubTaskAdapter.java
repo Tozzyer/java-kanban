@@ -1,4 +1,4 @@
-package adaptersForJson;
+package adapters;
 
 import com.google.gson.*;
 import model.SubTask;

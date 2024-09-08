@@ -1,7 +1,7 @@
-package adaptersForJson;
+package adapters;
 
 import com.google.gson.*;
-import model.Task;
+import model.Epic;
 import model.Status;
 
 import java.lang.reflect.Type;
@@ -9,27 +9,26 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class TaskAdapter implements JsonSerializer<Task>, JsonDeserializer<Task> {
+public class EpicAdapter implements JsonSerializer<Epic>, JsonDeserializer<Epic> {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Override
-    public JsonElement serialize(Task task, Type typeOfSrc, JsonSerializationContext context) {
+    public JsonElement serialize(Epic task, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("id", task.getId());
         jsonObject.addProperty("taskName", task.getTaskName());
         jsonObject.addProperty("status", task.getStatus().name());
         jsonObject.addProperty("content", task.getContent());
-
         jsonObject.addProperty("startTime", task.getStartTime().format(formatter));
-
         jsonObject.addProperty("duration", task.getDuration().toMinutes());
+        jsonObject.addProperty("epicSubs", task.getEpicSubs().toString());
 
         return jsonObject;
     }
 
     @Override
-    public Task deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+    public Epic deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject jsonObject = json.getAsJsonObject();
 
         Integer id = jsonObject.get("id").getAsInt();
@@ -41,6 +40,6 @@ public class TaskAdapter implements JsonSerializer<Task>, JsonDeserializer<Task>
 
         Duration duration = Duration.ofMinutes(jsonObject.get("duration").getAsLong());
 
-        return new Task(taskName, content, status, id, startTime, duration);
+        return new Epic(taskName, content, status, id, startTime, duration);
     }
 }

@@ -1,6 +1,6 @@
 package handlers;
 
-import adaptersForJson.TaskAdapter;
+import adapters.TaskAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
