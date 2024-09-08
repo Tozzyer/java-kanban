@@ -26,11 +26,10 @@ public class Task implements Comparable<Task> {
         this.status = status;
         this.taskName = taskName;
         this.content = content;
-        this.id=id;
-        this.startTime=startTime;
-        this.duration=duration;
+        this.id = id;
+        this.startTime = startTime;
+        this.duration = duration;
     }
-
 
 
     public LocalDateTime getEndTime() {
