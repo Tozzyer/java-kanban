@@ -13,9 +13,6 @@ public class Task implements Comparable<Task> {
     protected LocalDateTime startTime;
     protected Duration duration;
 
-
-    //Конструктор
-
     public Task(String taskName, String content, Status status) {
         this.status = status;
         this.taskName = taskName;
