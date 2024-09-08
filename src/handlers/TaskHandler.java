@@ -42,11 +42,10 @@ public class TaskHandler implements HttpHandler {
         System.out.println(path);
         String method = exchange.getRequestMethod();
         String[] pathDeplete = path.split("/");
-        System.out.println("Путь разобран на "+pathDeplete[0]);
         try{
-            commandId = Integer.parseInt(pathDeplete[1]);
+            commandId = Integer.parseInt(pathDeplete[2]);
             System.out.println("Сработал парсинг ID");
-        } catch (NumberFormatException e){
+        } catch (Exception e){
             commandId = -1;
             System.out.println("Не сработал парсинг ID "+commandId);
         }
@@ -63,9 +62,9 @@ public class TaskHandler implements HttpHandler {
     }
 
     public void get(HttpExchange exchange) throws IOException {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
-        gson = gsonBuilder.create();
+//        GsonBuilder gsonBuilder = new GsonBuilder();
+//        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
+//        gson = gsonBuilder.create();
         List<Task> tasks = new ArrayList<>(master.getAllTasks());
         System.out.println(tasks);
         String response = gson.toJson(tasks);
@@ -74,12 +73,12 @@ public class TaskHandler implements HttpHandler {
     }
 
     public void post(HttpExchange exchange) throws IOException {
-        //Создаётся билдер GSON для преобразования JSON
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        //Регистрируем адаптер для корректного преобразования кастомных полей
-        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
-        //Обновляем gson
-        gson = gsonBuilder.create();
+//        //Создаётся билдер GSON для преобразования JSON
+//        GsonBuilder gsonBuilder = new GsonBuilder();
+//        //Регистрируем адаптер для корректного преобразования кастомных полей
+//        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
+//        //Обновляем gson
+//        gson = gsonBuilder.create();
         //Запускаем поток чтения тела запроса и создаём из него новый объект task, который отправляем в менеджер.
         InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
         Task task = gson.fromJson(isr, Task.class);
