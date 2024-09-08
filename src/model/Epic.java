@@ -1,15 +1,19 @@
 package model;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 
 public class Epic extends Task {
     HashMap<Integer, SubTask> epicSubs = new HashMap<>();
-    private LocalDateTime endTime;
 
     public Epic(String taskName, String content, Status status) {
         super(taskName, content, status);
+    }
+
+    public Epic(String taskName, String content, Status status, Integer id, LocalDateTime startTime, Duration duration) {
+        super(taskName, content, status, id, startTime, duration);
     }
 
     public void addSubTask(SubTask subTask) {
@@ -18,6 +22,7 @@ public class Epic extends Task {
     }
 
     private void refreshTimeLimits() {
+        LocalDateTime endTime;
         Task firstTask = epicSubs.values()
                 .stream()
                 .min(Comparator.comparing(Task::getStartTime))
@@ -28,7 +33,7 @@ public class Epic extends Task {
                 .orElse(null);
         startTime = firstTask.getStartTime();
         endTime = lastTask.getEndTime();
-
+        duration = Duration.between(startTime,endTime);
     }
 
     void printAllEpicSubTasks() {
