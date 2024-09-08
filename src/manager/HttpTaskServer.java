@@ -15,12 +15,11 @@ import java.time.LocalDateTime;
 public class HttpTaskServer {
 
     private HttpServer server;
-    final private int APPLICATION_PORT = 8080;
-
+    final private int ApplicationPort = 8080;
     FileBackedTaskManager master = new FileBackedTaskManager();
 
     public HttpTaskServer() throws IOException {
-        this.server = HttpServer.create(new InetSocketAddress(APPLICATION_PORT), 0);
+        this.server = HttpServer.create(new InetSocketAddress(ApplicationPort), 0);
     }
 
     public void startServer() {
@@ -30,7 +29,7 @@ public class HttpTaskServer {
         server.createContext("/history", new HistoryHandler(master));
         server.createContext("/prioritized", new PriorityHandler(master));
         server.start();
-        System.out.println("Сервер запущен на порту: " + APPLICATION_PORT);
+        System.out.println("Сервер запущен на порту: " + ApplicationPort);
     }
 
     public void stopServer() {
