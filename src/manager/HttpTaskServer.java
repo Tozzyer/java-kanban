@@ -17,17 +17,14 @@ public class HttpTaskServer {
 
     private HttpServer server;
     final private int APPLICATION_PORT = 8086;
-    Gson gson;
     FileBackedTaskManager master = new FileBackedTaskManager();
 
     public HttpTaskServer() throws IOException {
         this.server= HttpServer.create(new InetSocketAddress(APPLICATION_PORT), 0);
-        this.gson = new Gson();
     }
 
     public void startServer(){
-        server.createContext("/tasks", new TaskHandler(gson, master));
-        server.createContext("/test", new HelloHandler(gson,master));
+        server.createContext("/tasks", new TaskHandler(master));
 //        server.createContext("/subtasks", new SubHandler(gson));
 //        server.createContext("/subtasks", new SubHandler(gson));
 //        server.createContext("/history", new HistoryHandler(gson));

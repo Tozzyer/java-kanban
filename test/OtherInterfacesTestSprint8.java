@@ -1,3 +1,4 @@
+import manager.CrossingException;
 import manager.FileBackedTaskManager;
 import manager.HistoryManager;
 import manager.Managers;
@@ -75,13 +76,25 @@ public class OtherInterfacesTestSprint8 {
         task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 10));
         task2.setDuration(Duration.ofMinutes(10));
         master.addTask(task1);
-        master.addTask(task2);
+        try {
+            master.addTask(task2);
+        } catch (CrossingException e){
+            System.out.println(e.getMessage());
+        }
         task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 1));
         task2.setDuration(Duration.ofMinutes(10));
-        master.addTask(task2);
+        try{
+            master.addTask(task2);
+        }catch (CrossingException e){
+            System.out.println(e.getMessage());
+        }
         task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 19));
         task2.setDuration(Duration.ofMinutes(10));
-        master.addTask(task2);
+        try{
+            master.addTask(task2);
+        }catch (CrossingException e){
+            System.out.println(e.getMessage());
+        }
         Assertions.assertEquals(1, master.getAllTasks().size());
         task2.setStartTime(LocalDateTime.of(2000, 1, 1, 0, 20));
         task2.setDuration(Duration.ofMinutes(10));

@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import manager.CrossingException;
 import manager.FileBackedTaskManager;
 import model.Task;
 
@@ -16,27 +17,25 @@ import java.util.List;
 
 import java.io.IOException;
 
+
+
 public class TaskHandler implements HttpHandler {
 
     Gson gson;
+    GsonBuilder gsonBuilder;
     FileBackedTaskManager master;
 
 
-    public TaskHandler(Gson gson,FileBackedTaskManager master){
-//        this.gson=gson;
+    public TaskHandler(FileBackedTaskManager master){
         this.master=master;
-        System.out.println("Конструктор отработал");
         GsonBuilder gsonBuilder = new GsonBuilder();
-        //Регистрируем адаптер для корректного преобразования кастомных полей
         gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
-        //Обновляем gson
         this.gson = gsonBuilder.create();
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         System.out.println("Обработчик вызвался");
-        String command;
         Integer commandId=-1;
         String path = exchange.getRequestURI().getPath();
         System.out.println(path);
@@ -62,9 +61,6 @@ public class TaskHandler implements HttpHandler {
     }
 
     public void get(HttpExchange exchange) throws IOException {
-//        GsonBuilder gsonBuilder = new GsonBuilder();
-//        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
-//        gson = gsonBuilder.create();
         List<Task> tasks = new ArrayList<>(master.getAllTasks());
         System.out.println(tasks);
         String response = gson.toJson(tasks);
@@ -73,20 +69,20 @@ public class TaskHandler implements HttpHandler {
     }
 
     public void post(HttpExchange exchange) throws IOException {
-//        //Создаётся билдер GSON для преобразования JSON
-//        GsonBuilder gsonBuilder = new GsonBuilder();
-//        //Регистрируем адаптер для корректного преобразования кастомных полей
-//        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
-//        //Обновляем gson
-//        gson = gsonBuilder.create();
         //Запускаем поток чтения тела запроса и создаём из него новый объект task, который отправляем в менеджер.
         InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
         Task task = gson.fromJson(isr, Task.class);
         System.out.println(task);
-        master.addTask(task);
-        String response = "Задача "+task.getId()+" успешно создана";
+        try{
+            master.addTask(task);
+            String response = "Задача "+task.getId()+" успешно создана";
+            sendResponse(exchange, response, 201);
+        } catch (CrossingException e){
+            String response = e.getMessage();
+            sendResponse(exchange, response, 406);
+        }
         //Высылаем ответ клиенту
-        sendResponse(exchange, response, 201);
+
     }
 
     public void delete(HttpExchange exchange) throws IOException {
