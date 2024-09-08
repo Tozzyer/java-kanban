@@ -1,36 +1,26 @@
 package handlers;
 
-import AdaptersForJSON.TaskAdapter;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import manager.FileBackedTaskManager;
 import model.Task;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 
-import java.io.IOException;
-
-public class TaskHandler implements HttpHandler {
+public class HelloHandler implements HttpHandler {
 
     Gson gson;
     FileBackedTaskManager master;
 
-
-    public TaskHandler(Gson gson,FileBackedTaskManager master){
-//        this.gson=gson;
+    public HelloHandler(Gson gson, FileBackedTaskManager master){
+        this.gson=gson;
         this.master=master;
         System.out.println("Конструктор отработал");
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        //Регистрируем адаптер для корректного преобразования кастомных полей
-        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
-        //Обновляем gson
-        this.gson = gsonBuilder.create();
     }
 
     @Override
@@ -52,9 +42,11 @@ public class TaskHandler implements HttpHandler {
         }
 
         if(commandId<0){
+            System.out.println("Сработал метод без ID");
             noIdPath(method, exchange);
 
         } else {
+            System.out.println("Сработал метод c ID");
             withIdPath(method, commandId, exchange);
 
         }
@@ -63,31 +55,49 @@ public class TaskHandler implements HttpHandler {
     }
 
     public void get(HttpExchange exchange) throws IOException {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
-        gson = gsonBuilder.create();
-        List<Task> tasks = new ArrayList<>(master.getAllTasks());
-        System.out.println(tasks);
+        String tasks = "Resonooo";
         String response = gson.toJson(tasks);
-        System.out.println(response);
         sendResponse(exchange, response, 200);
     }
 
     public void post(HttpExchange exchange) throws IOException {
-        //Создаётся билдер GSON для преобразования JSON
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        //Регистрируем адаптер для корректного преобразования кастомных полей
-        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
-        //Обновляем gson
-        gson = gsonBuilder.create();
-        //Запускаем поток чтения тела запроса и создаём из него новый объект task, который отправляем в менеджер.
-        InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
-        Task task = gson.fromJson(isr, Task.class);
-        System.out.println(task);
-        master.addTask(task);
-        String response = "Задача "+task.getId()+" успешно создана";
-        //Высылаем ответ клиенту
-        sendResponse(exchange, response, 201);
+        try(InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)){
+            Task task = gson.fromJson(isr, Task.class);
+
+            // Выводим объект Task
+            System.out.println("Task ID: " + task.getId());
+            System.out.println("Task Name: " + task.getTaskName());
+            System.out.println("Status: " + task.getStatus());
+            System.out.println("Content: " + task.getContent());
+            System.out.println("Start Time: " + task.getStartTime());
+            System.out.println("Duration: " + task.getDuration());
+        }catch (Exception e) {
+            System.err.println("Failed to parse JSON: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+//        BufferedReader reader = new BufferedReader(isr);
+//
+//        StringBuilder content = new StringBuilder();
+//        String line;
+//        while ((line = reader.readLine()) != null) {
+//            content.append(line);
+//        }
+//
+//        System.out.println("Request body:");
+//        System.out.println(content.toString());
+//
+//        // Не забудьте закрыть BufferedReader
+//        reader.close();
+
+        //Task task = gson.fromJson(isr, Task.class);
+
+
+
+        //System.out.println(task);
+        //master.addTask(task);
+        //String response = "Задача "+task.getId()+" успешно создана";
+        //sendResponse(exchange, response, 201);
     }
 
     public void delete(HttpExchange exchange) throws IOException {

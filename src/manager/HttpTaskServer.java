@@ -27,7 +27,7 @@ public class HttpTaskServer {
 
     public void startServer(){
         server.createContext("/tasks", new TaskHandler(gson, master));
-//        server.createContext("/epics", new EpicHandler(gson));
+        server.createContext("/test", new HelloHandler(gson,master));
 //        server.createContext("/subtasks", new SubHandler(gson));
 //        server.createContext("/subtasks", new SubHandler(gson));
 //        server.createContext("/history", new HistoryHandler(gson));
@@ -66,6 +66,7 @@ public void test(){
         master.addTask(task1);
         master.addEpic(epic1);
         master.addSub(sub1);
+    System.out.println(master.getAllTasks());
 }
 
 }
