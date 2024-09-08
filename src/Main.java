@@ -49,8 +49,5 @@ public class Main {
 
         HttpTaskServer server = new HttpTaskServer();
         server.startServer();
-        server.test();
-        //server.stopServer();
-
     }
 }

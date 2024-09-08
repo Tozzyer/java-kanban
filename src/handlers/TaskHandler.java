@@ -18,7 +18,6 @@ import java.util.List;
 import java.io.IOException;
 
 
-
 public class TaskHandler implements HttpHandler {
 
     Gson gson;
@@ -26,30 +25,24 @@ public class TaskHandler implements HttpHandler {
     FileBackedTaskManager master;
 
 
-    public TaskHandler(FileBackedTaskManager master){
-        this.master=master;
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
-        this.gson = gsonBuilder.create();
+    public TaskHandler(FileBackedTaskManager master) {
+        this.master = master;
+        gsonInitializator();
     }
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        System.out.println("Обработчик вызвался");
-        Integer commandId=-1;
+        Integer commandId = -1;
         String path = exchange.getRequestURI().getPath();
-        System.out.println(path);
         String method = exchange.getRequestMethod();
         String[] pathDeplete = path.split("/");
-        try{
+        try {
             commandId = Integer.parseInt(pathDeplete[2]);
-            System.out.println("Сработал парсинг ID");
-        } catch (Exception e){
+        } catch (Exception e) {
             commandId = -1;
-            System.out.println("Не сработал парсинг ID "+commandId);
         }
 
-        if(commandId<0){
+        if (commandId < 0) {
             noIdPath(method, exchange);
 
         } else {
@@ -62,9 +55,7 @@ public class TaskHandler implements HttpHandler {
 
     public void get(HttpExchange exchange) throws IOException {
         List<Task> tasks = new ArrayList<>(master.getAllTasks());
-        System.out.println(tasks);
         String response = gson.toJson(tasks);
-        System.out.println(response);
         sendResponse(exchange, response, 200);
     }
 
@@ -72,12 +63,11 @@ public class TaskHandler implements HttpHandler {
         //Запускаем поток чтения тела запроса и создаём из него новый объект task, который отправляем в менеджер.
         InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8);
         Task task = gson.fromJson(isr, Task.class);
-        System.out.println(task);
-        try{
+        try {
             master.addTask(task);
-            String response = "Задача "+task.getId()+" успешно создана";
+            String response = "Задача " + task.getId() + " успешно создана";
             sendResponse(exchange, response, 201);
-        } catch (CrossingException e){
+        } catch (CrossingException e) {
             String response = e.getMessage();
             sendResponse(exchange, response, 406);
         }
@@ -88,12 +78,19 @@ public class TaskHandler implements HttpHandler {
     public void delete(HttpExchange exchange) throws IOException {
         master.eraseTaskHashMap();
         String response = "Все задачи удалены";
-        sendResponse(exchange,response,200);
+        sendResponse(exchange, response, 200);
     }
+
     public void getId(Integer id, HttpExchange exchange) throws IOException {
-        Task task = master.getTask(id);
-        String response = gson.toJson(task);
-        sendResponse(exchange,response,200);
+        try {
+            Task task = master.getTask(id);
+            String response = gson.toJson(task);
+            sendResponse(exchange, response, 200);
+        } catch (Exception e) {
+            String response = "Такой задачи не существует";
+            sendResponse(exchange, response, 404);
+        }
+
     }
 
     public void postId(Integer id, HttpExchange exchange) throws IOException {
@@ -101,41 +98,40 @@ public class TaskHandler implements HttpHandler {
         Task task = gson.fromJson(isr, Task.class);
         task.setId(id);
         master.updateTask(task);
-        String response = "Задача "+task.getId()+" успешно обновлена";
+        String response = "Задача " + task.getId() + " успешно обновлена";
         sendResponse(exchange, response, 201);
     }
 
     public void deleteId(Integer id, HttpExchange exchange) throws IOException {
         master.removeTask(id);
-        String response = "Задача "+id+" удалена";
-        sendResponse(exchange,response,200);
+        String response = "Задача " + id + " удалена";
+        sendResponse(exchange, response, 200);
     }
-    public void dfM(){
 
+    public void dfM() {
+        String response = "Неизвестно как, но мы отправили неверный метод";
+        System.out.println(response);
     }
 
     public void noIdPath(String method, HttpExchange exchange) throws IOException {
-        switch (method.toLowerCase()){
+        switch (method.toLowerCase()) {
             case "get":
-                System.out.println("get");
                 get(exchange);
                 break;
             case "post":
-                System.out.println("post");
                 post(exchange);
                 break;
             case "delete":
-                System.out.println("delete");
                 delete(exchange);
                 break;
             default:
-                System.out.println("default");
                 dfM();
                 break;
         }
     }
+
     public void withIdPath(String method, Integer id, HttpExchange exchange) throws IOException {
-        switch (method.toLowerCase()){
+        switch (method.toLowerCase()) {
             case "get":
                 getId(id, exchange);
                 break;
@@ -151,11 +147,17 @@ public class TaskHandler implements HttpHandler {
         }
     }
 
-    public void sendResponse (HttpExchange httpExchange, String response, int statusCode) throws IOException {
+    public void sendResponse(HttpExchange httpExchange, String response, int statusCode) throws IOException {
         httpExchange.getResponseHeaders().set("Content-Type", "application/json");
-        httpExchange.sendResponseHeaders(statusCode,response.getBytes().length);
+        httpExchange.sendResponseHeaders(statusCode, response.getBytes().length);
         OutputStream stream = httpExchange.getResponseBody();
         stream.write(response.getBytes());
         stream.close();
+    }
+
+    protected void gsonInitializator() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(Task.class, new TaskAdapter());
+        this.gson = gsonBuilder.create();
     }
 }

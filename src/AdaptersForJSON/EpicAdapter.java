@@ -3,35 +3,27 @@ package AdaptersForJSON;
 import com.google.gson.*;
 import model.Epic;
 import model.Status;
-import model.SubTask;
-import model.Task;
 
 import java.lang.reflect.Type;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 
 public class EpicAdapter implements JsonSerializer<Epic>, JsonDeserializer<Epic> {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Override
     public JsonElement serialize(Epic task, Type typeOfSrc, JsonSerializationContext context) {
         JsonObject jsonObject = new JsonObject();
-        JsonObject subHashJson = new JsonObject();
         jsonObject.addProperty("id", task.getId());
         jsonObject.addProperty("taskName", task.getTaskName());
         jsonObject.addProperty("status", task.getStatus().name());
         jsonObject.addProperty("content", task.getContent());
         jsonObject.addProperty("startTime", task.getStartTime().format(formatter));
-        jsonObject.addProperty("duration", task.getDuration().getSeconds());
+        jsonObject.addProperty("duration", task.getDuration().toMinutes());
+        jsonObject.addProperty("epicSubs", task.getEpicSubs().toString());
 
-        for (Integer key : task.getEpicSubs().keySet()) {
-            SubTask subTask = task.getEpicSubs().get(key);
-            subHashJson.add(key.toString(), context.serialize(subTask)); // Используем контекст для сериализации SubTask
-        }
-        jsonObject.add("epicSubs", subHashJson);
         return jsonObject;
     }
 
@@ -43,24 +35,11 @@ public class EpicAdapter implements JsonSerializer<Epic>, JsonDeserializer<Epic>
         String taskName = jsonObject.get("taskName").getAsString();
         Status status = Status.valueOf(jsonObject.get("status").getAsString());
         String content = jsonObject.get("content").getAsString();
-        LocalDateTime startTime = jsonObject.has("startTime") && !jsonObject.get("startTime").isJsonNull()
-                ? LocalDateTime.parse(jsonObject.get("startTime").getAsString(), formatter)
-                : null;
-        Duration duration = jsonObject.has("duration") ? Duration.ofSeconds(jsonObject.get("duration").getAsLong()) : Duration.ZERO;
 
-        Epic epic = new Epic(taskName, content, status, id, startTime, duration);
+        LocalDateTime startTime = LocalDateTime.parse(jsonObject.get("startTime").getAsString(), formatter);
 
-        JsonObject epicSubsJson = jsonObject.getAsJsonObject("epicSubs");
-        HashMap<Integer, SubTask> epicSubs = new HashMap<>();
-        for (String key : epicSubsJson.keySet()) {
-            SubTask subTask = context.deserialize(epicSubsJson.get(key), SubTask.class);
-            epicSubs.put(Integer.parseInt(key), subTask);
-        }
+        Duration duration = Duration.ofMinutes(jsonObject.get("duration").getAsLong());
 
-        for (SubTask subTask : epicSubs.values()) {
-            epic.addSubTask(subTask);
-        }
-
-        return epic;
+        return new Epic(taskName, content, status, id, startTime, duration);
     }
 }
