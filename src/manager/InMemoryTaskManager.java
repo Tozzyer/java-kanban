@@ -91,7 +91,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     //Создание задачи
     @Override
-    public void addEpic(Epic task) throws CrossingException{
+    public void addEpic(Epic task) throws CrossingException {
         boolean isCrossed = tasks.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
 

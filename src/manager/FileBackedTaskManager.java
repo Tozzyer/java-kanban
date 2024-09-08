@@ -1,8 +1,10 @@
 package manager;
+
 import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -43,7 +45,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     //Начало переписанных методов
     @Override
-    public void addTask(Task task) throws CrossingException{
+    public void addTask(Task task) throws CrossingException {
         boolean isCrossed = tasks.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
 
@@ -63,7 +65,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addEpic(Epic task) throws CrossingException{
+    public void addEpic(Epic task) throws CrossingException {
         boolean isCrossed = tasks.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
 
@@ -83,7 +85,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addSub(SubTask task) throws CrossingException{
+    public void addSub(SubTask task) throws CrossingException {
         boolean isCrossed = tasks.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
 
