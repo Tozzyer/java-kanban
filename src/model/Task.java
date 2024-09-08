@@ -22,6 +22,15 @@ public class Task implements Comparable<Task> {
         this.content = content;
     }
 
+    public Task(String taskName, String content, Status status, Integer id, LocalDateTime startTime, Duration duration) {
+        this.status = status;
+        this.taskName = taskName;
+        this.content = content;
+        this.id=id;
+        this.startTime=startTime;
+        this.duration=duration;
+    }
+
 
 
     public LocalDateTime getEndTime() {

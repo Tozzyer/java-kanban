@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 public class TaskAdapter implements JsonSerializer<Task>, JsonDeserializer<Task> {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Override
     public JsonElement serialize(Task task, Type typeOfSrc, JsonSerializationContext context) {
@@ -23,7 +23,7 @@ public class TaskAdapter implements JsonSerializer<Task>, JsonDeserializer<Task>
 
         jsonObject.addProperty("startTime", task.getStartTime().format(formatter));
 
-        jsonObject.addProperty("duration", task.getDuration().getSeconds());
+        jsonObject.addProperty("duration", task.getDuration().toMinutes());
 
         return jsonObject;
     }
@@ -39,8 +39,8 @@ public class TaskAdapter implements JsonSerializer<Task>, JsonDeserializer<Task>
 
         LocalDateTime startTime = LocalDateTime.parse(jsonObject.get("startTime").getAsString(), formatter);
 
-        Duration duration = Duration.ofSeconds(jsonObject.get("duration").getAsLong());
+        Duration duration = Duration.ofMinutes(jsonObject.get("duration").getAsLong());
 
-        return new Task(taskName, content, status);
+        return new Task(taskName, content, status, id, startTime, duration);
     }
 }
