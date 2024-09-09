@@ -13,6 +13,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -105,6 +106,49 @@ class HttpServerTest {
         Assertions.assertEquals(0, server.getMaster().getAllTasks().size());
         Assertions.assertEquals(0, server.getMaster().getAllEpics().size());
         Assertions.assertEquals(0, server.getMaster().getAllSubs().size());
+    }
+
+    @Test
+    void notFoundTest() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/5");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(404, response.statusCode());
+    }
+
+    @Test
+    void testPostUpdateMethod () throws IOException, InterruptedException {
+        String inputJsonTask = "{"
+                + "\"id\": 1,"
+                + "\"taskName\": \"Updated\","
+                + "\"status\": \"NEW\","
+                + "\"content\": \"Updated task content.\","
+                + "\"startTime\": \"2000-01-01T00:00:00\","
+                + "\"duration\": 10"
+                + "}";
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks/1");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(inputJsonTask, StandardCharsets.UTF_8)).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(201, response.statusCode());
+    }
+
+    @Test
+    void testPostFailedTimeCrossingAddingMethod () throws IOException, InterruptedException {
+        String inputJsonTask = "{"
+                + "\"id\": 4,"
+                + "\"taskName\": \"Updated\","
+                + "\"status\": \"NEW\","
+                + "\"content\": \"Updated task content.\","
+                + "\"startTime\": \"2000-01-01T00:00:00\","
+                + "\"duration\": 10"
+                + "}";
+        HttpClient client = HttpClient.newHttpClient();
+        URI url = URI.create("http://localhost:8080/tasks");
+        HttpRequest request = HttpRequest.newBuilder().uri(url).POST(HttpRequest.BodyPublishers.ofString(inputJsonTask, StandardCharsets.UTF_8)).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        assertEquals(406, response.statusCode());
     }
 
 }
