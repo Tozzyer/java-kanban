@@ -1,8 +1,10 @@
 package manager;
+
 import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -43,7 +45,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     //Начало переписанных методов
     @Override
-    public void addTask(Task task) {
+    public void addTask(Task task) throws CrossingException {
         boolean isCrossed = tasks.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
 
@@ -53,7 +55,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         isCrossed = isCrossed || subs.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
         if (isCrossed) {
-            System.out.println("На это время уже назначена задача");
+            throw new CrossingException("На данное время уже назначена задача");
         } else {
             taskId++;
             tasks.put(taskId, task);
@@ -63,7 +65,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addEpic(Epic task) {
+    public void addEpic(Epic task) throws CrossingException {
         boolean isCrossed = tasks.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
 
@@ -73,7 +75,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         isCrossed = isCrossed || subs.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
         if (isCrossed) {
-            System.out.println("На это время уже назначена задача");
+            throw new CrossingException("На данное время уже назначена задача");
         } else {
             taskId++;
             epics.put(taskId, task);
@@ -83,7 +85,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void addSub(SubTask task) {
+    public void addSub(SubTask task) throws CrossingException {
         boolean isCrossed = tasks.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
 
@@ -94,7 +96,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         isCrossed = isCrossed || subs.values().stream()
                 .anyMatch(existingTask -> existingTask.isTimeCrossed(task));
         if (isCrossed) {
-            System.out.println("На это время уже назначена задача");
+            throw new CrossingException("На данное время уже назначена задача");
         } else {
             taskId++;
             subs.put(taskId, task);

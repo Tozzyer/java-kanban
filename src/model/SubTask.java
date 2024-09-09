@@ -1,5 +1,7 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class SubTask extends Task {
@@ -9,6 +11,14 @@ public class SubTask extends Task {
     public SubTask(String taskName, String content, Status status, Integer masterId) {
         super(taskName, content, status);
         this.masterId = masterId;
+    }
+
+    public SubTask(String taskName, String content, Status status, Integer masterId, Integer id, LocalDateTime startTime, Duration duration) {
+        super(taskName, content, status);
+        this.masterId = masterId;
+        setId(id);
+        setStartTime(startTime);
+        setDuration(duration);
     }
 
     public Integer getMasterId() {
