@@ -11,11 +11,14 @@ import java.util.HashMap;
 public class InMemoryTaskManager implements TaskManager {
 
     //Хранение всех типов
-    private Integer taskId = 0;
+    protected Integer taskId = 0;
 
-    private final HashMap<Integer, Task> tasks = new HashMap<>();
-    private final HashMap<Integer, Epic> epics = new HashMap<>();
-    private final HashMap<Integer, SubTask> subs = new HashMap<>();
+
+    //SP7 - private изменён на protected для доступа из потомка
+    //SP7 - отладка - сделан public
+    public final HashMap<Integer, Task> tasks = new HashMap<>();
+    public final HashMap<Integer, Epic> epics = new HashMap<>();
+    public final HashMap<Integer, SubTask> subs = new HashMap<>();
     public HistoryManager historian = new InMemoryHistoryManager();
 
 
@@ -25,7 +28,7 @@ public class InMemoryTaskManager implements TaskManager {
         return tasks.values();
     }
 
-    //Получение по идентификатору
+    //Получение по идентификатору НЕ ЗАБЫТЬ РАСКОММЕНТИТЬ
     @Override
     public Task getTask(Integer id) {
         historian.add(tasks.get(id));
