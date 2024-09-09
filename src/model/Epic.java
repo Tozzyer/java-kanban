@@ -1,9 +1,12 @@
 package model;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class Epic extends Task {
     HashMap<Integer, SubTask> epicSubs = new HashMap<>();
+    private LocalDateTime endTime;
 
     public Epic(String taskName, String content, Status status) {
         super(taskName, content, status);
@@ -11,6 +14,21 @@ public class Epic extends Task {
 
     public void addSubTask(SubTask subTask) {
         epicSubs.put(subTask.getId(), subTask);
+        refreshTimeLimits();
+    }
+
+    private void refreshTimeLimits() {
+        Task firstTask = epicSubs.values()
+                .stream()
+                .min(Comparator.comparing(Task::getStartTime))
+                .orElse(null);
+        Task lastTask = epicSubs.values()
+                .stream()
+                .max(Comparator.comparing(Task::getStartTime))
+                .orElse(null);
+        startTime = firstTask.getStartTime();
+        endTime = lastTask.getEndTime();
+
     }
 
     void printAllEpicSubTasks() {

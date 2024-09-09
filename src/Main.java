@@ -6,6 +6,9 @@ import model.Status;
 import model.SubTask;
 import model.Task;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -25,6 +28,20 @@ public class Main {
         SubTask sub7 = new SubTask("12", "Sub 7", Status.NEW, 4);
         SubTask sub8 = new SubTask("13", "Sub 8", Status.NEW, 4);
         Epic epic3 = new Epic("5", "model.Epic 3", Status.NEW);
+        task1.setStartTime(LocalDateTime.of(2000,1,1,0,10));
+        task1.setDuration(Duration.ofMinutes(10));
+        task2.setStartTime(LocalDateTime.of(2000,1,1,0,0));
+        epic1.setDuration(Duration.ofMinutes(10));
+        epic1.setStartTime(LocalDateTime.of(1999,1,1,0,0));
+        task2.setDuration(Duration.ofMinutes(10));
+//        sub1.setStartTime(LocalDateTime.of(1970,1,1,0,0));
+//        sub1.setDuration(Duration.ofMinutes(10));
+        master.addTask(task2);
+        master.addTask(task1);
+        master.addEpic(epic1);
+        master.addSub(sub1);
+        System.out.println(master.getPrioritizedTasks());
+        //master.timeSortedTasks.forEach(task -> System.out.println(task.getStartTime()));
 
     }
 }

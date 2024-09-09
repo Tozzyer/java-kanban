@@ -1,13 +1,18 @@
 package model;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Task {
+public class Task implements Comparable<Task> {
 
     private Integer id;//id задачи
     private String taskName; // имя задачи
     private Status status;  // статус задачи
     private String content; // содержимое задачи
+    protected LocalDateTime startTime;
+    protected Duration duration;
+
 
     //Конструктор
 
@@ -15,6 +20,30 @@ public class Task {
         this.status = status;
         this.taskName = taskName;
         this.content = content;
+    }
+
+    public LocalDateTime getEndTime() {
+        if (startTime != null && duration != null) {
+            return startTime.plus(duration);
+        } else {
+            return LocalDateTime.MIN;
+        }
+    }
+
+    public Duration getDuration() {
+        if (duration != null) {
+            return duration;
+        } else {
+            return Duration.ofMinutes(0);
+        }
+    }
+
+    public LocalDateTime getStartTime() {
+        if (startTime != null) {
+            return startTime;
+        } else {
+            return LocalDateTime.MIN;
+        }
     }
 
     public Integer getId() {
@@ -71,4 +100,31 @@ public class Task {
                 ", content='" + content + '\'' +
                 '}';
     }
+
+    @Override
+    public int compareTo(Task o) {
+        if (this.startTime == null && o.startTime == null) {
+            return 0;
+        }
+        if (this.startTime == null) {
+            return -1;
+        }
+        if (o.startTime == null) {
+            return 1;
+        }
+        return this.startTime.compareTo(o.startTime);
+    }
+
+    public boolean isTimeCrossed(Task task) {
+        return task.getStartTime().isBefore(this.getEndTime()) && task.getEndTime().isAfter(this.getStartTime());
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
 }

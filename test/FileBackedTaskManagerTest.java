@@ -1,19 +1,15 @@
 import manager.FileBackedTaskManager;
 import manager.HistoryManager;
-import manager.InMemoryTaskManager;
 import manager.Managers;
 import model.Epic;
 import model.Status;
 import model.SubTask;
 import model.Task;
 import org.junit.jupiter.api.Assertions;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class FileBackedTaskManagerTest {
@@ -44,7 +40,7 @@ public class FileBackedTaskManagerTest {
         ArrayList<String> data = new ArrayList<>();
 
         try {
-            data = (ArrayList<String>) Files.readAllLines(master.taskFile);
+            data = (ArrayList<String>) Files.readAllLines(master.getTaskFile());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении из файла");
         }
@@ -68,7 +64,7 @@ public class FileBackedTaskManagerTest {
         master.updateTask(task2);
 
         try {
-            data = (ArrayList<String>) Files.readAllLines(master.taskFile);
+            data = (ArrayList<String>) Files.readAllLines(master.getTaskFile());
         } catch (IOException e) {
             System.out.println("Ошибка при чтении из файла");
         }
